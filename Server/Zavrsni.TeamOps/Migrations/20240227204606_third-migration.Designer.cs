@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zavrsni.TeamOps.Entity;
 
@@ -11,9 +12,11 @@ using Zavrsni.TeamOps.Entity;
 namespace Zavrsni.TeamOps.Migrations
 {
     [DbContext(typeof(TeamOpsDbContext))]
-    partial class TeamOpsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240227204606_third-migration")]
+    partial class thirdmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

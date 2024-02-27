@@ -12,6 +12,7 @@ namespace Zavrsni.TeamOps.Entity
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Project> Projects { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,6 +24,12 @@ namespace Zavrsni.TeamOps.Entity
                         .WithMany()
                         .HasForeignKey(o => o.OwnerId)
                         .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Project>()
+                        .HasOne<Organization>()
+                        .WithMany(p => p.Projects)
+                        .HasForeignKey(fk => fk.OrganizationId)
+                        .IsRequired();
         }
     }
 }

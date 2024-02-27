@@ -1,4 +1,5 @@
-﻿using Zavrsni.TeamOps.UserDomain.Models;
+﻿using Zavrsni.TeamOps.Common;
+using Zavrsni.TeamOps.UserDomain.Models;
 
 namespace Zavrsni.TeamOps.UserDomain.Service
 {

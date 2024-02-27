@@ -12,5 +12,6 @@ namespace Zavrsni.TeamOps.Entity.Models
         public string Password { get; set; }
 
         public List<Organization> Organizations { get; } = new List<Organization>();
+        public List<Project> Projects { get; } = new List<Project>();
     }
 }

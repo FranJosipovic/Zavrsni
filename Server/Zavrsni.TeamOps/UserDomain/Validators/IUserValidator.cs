@@ -1,4 +1,6 @@
-﻿namespace Zavrsni.TeamOps.UserDomain.Validators
+﻿using Zavrsni.TeamOps.Validation;
+
+namespace Zavrsni.TeamOps.UserDomain.Validators
 {
     public interface IUserValidator
     {

@@ -5,7 +5,7 @@ namespace Zavrsni.TeamOps
     public class ServiceActionResult
     {
         private int StatusCode { get; set; }
-        private string StatusMessage { get; set; }
+        private string StatusMessage { get; set; } = string.Empty;
         private object? Data { get; set; }
         private bool IsSuccess { get; set; }
 
@@ -23,11 +23,19 @@ namespace Zavrsni.TeamOps
             }
         }
 
+        public void SetOk(object? data, string message)
+        {
+            this.Data = data;
+            this.IsSuccess = true;
+            this.StatusMessage = message;
+            this.StatusCode = 200;
+        }
+
         public void SetAuthenticationFailed(string message)
         {
-            this.Data = message;
+            this.Data = null;
             this.IsSuccess = false;
-            this.StatusMessage = "Authentication Failed";
+            this.StatusMessage = message;
             this.StatusCode = 401;
         }
 
@@ -47,11 +55,11 @@ namespace Zavrsni.TeamOps
             this.StatusCode = 400;
         }
 
-        public void SetNotFound(object data)
+        public void SetNotFound(string message)
         {
-            this.Data = data;
+            this.Data = null;
             this.IsSuccess = false;
-            this.StatusMessage = "Object not found";
+            this.StatusMessage = message;
             this.StatusCode = 404;
         }
 
@@ -63,21 +71,15 @@ namespace Zavrsni.TeamOps
             this.StatusMessage = "Internal server error";
         }
 
-        public void Combine(DbActionResult dBresult)
-        {
-            this.StatusMessage = dBresult.StatusMessage;
-            this.StatusCode = dBresult.StatusCode;
-            this.Data = dBresult.Data;
-            this.IsSuccess = dBresult.IsSuccess;
-        }
-
         public void UpdateData(object data)
         {
             this.Data = data;
         }
 
-        public IActionResult GetResponseResult() => new ObjectResult(this.Value);
-
+        public IActionResult GetResponseResult() => new ObjectResult(this.Value)
+        {
+            StatusCode = this.StatusCode,
+        };
     }
 
 }

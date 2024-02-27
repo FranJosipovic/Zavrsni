@@ -1,18 +1,18 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using Zavrsni.TeamOps.DbUtils;
-using Zavrsni.TeamOps.Entity;
 using Zavrsni.TeamOps.Entity.Models;
+using Zavrsni.TeamOps.UserDomain.Repository;
+using Zavrsni.TeamOps.Validation;
 
 namespace Zavrsni.TeamOps.UserDomain.Validators
 {
     public class UserValidator : IUserValidator
     {
-        private readonly TeamOpsDbContext _db;
+        private readonly IUserRepository _userRepository;
 
-        public UserValidator(TeamOpsDbContext db)
+        public UserValidator(IUserRepository userRepository)
         {
-            _db = db;
+            this._userRepository = userRepository;
         }
 
         public async Task<ValidationResult> ValidateUserSignUp(string username, string email, string password)
@@ -22,13 +22,11 @@ namespace Zavrsni.TeamOps.UserDomain.Validators
             //password and validate(min 8 chars, at least 1 num, at least one special char)
             var validationHandler = new ValidationHandler();
 
-            var isUsernameUnique = await DbValidator.IsUnique(
-                _db,
+            var isUsernameUnique = await _userRepository.IsUnique(
                 (User u) => u.Username,
                 username);
 
-            var isEmailUnique = await DbValidator.IsUnique(
-                _db,
+            var isEmailUnique = await _userRepository.IsUnique(
                 (User u) => u.Email,
                 email);
 
@@ -37,7 +35,7 @@ namespace Zavrsni.TeamOps.UserDomain.Validators
                 .Validate(IsValidEmail(email), "Email is invalid")
                 .Validate(IsValidPassword(password), "Password does not meet requirements");
 
-            return validationHandler.result;
+            return validationHandler.Result;
         }
 
         private bool IsValidEmail(string email)
@@ -98,36 +96,6 @@ namespace Zavrsni.TeamOps.UserDomain.Validators
             var regex = new Regex(@"^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}$");
 
             return regex.IsMatch(password);
-        }
-    }
-
-    public class ValidationHandler
-    {
-        public ValidationResult result;
-        public ValidationHandler()
-        {
-            result = new ValidationResult();
-        }
-        public ValidationHandler Validate(bool condition, string errorMessage)
-        {
-            if (!condition)
-            {
-                result.IsValid = false;
-                result.Messages.Add(errorMessage);
-            }
-
-            return this;
-        }
-    }
-
-    public class ValidationResult
-    {
-        public bool IsValid { get; set; }
-        public List<string> Messages { get; set; }
-        public ValidationResult()
-        {
-            IsValid = true;
-            Messages = new List<string>();
         }
     }
 }

@@ -22,9 +22,9 @@ namespace Zavrsni.TeamOps.JWT
                 new Claim("username",userData.Username),
             };
 
-            var Sectoken = new JwtSecurityToken(configuration["Jwt:Issuer"],
-              configuration["Jwt:Issuer"],
-              claims,
+            var Sectoken = new JwtSecurityToken(issuer: configuration["Jwt:Issuer"],
+              audience: configuration["Jwt:Issuer"],
+              claims: claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
 

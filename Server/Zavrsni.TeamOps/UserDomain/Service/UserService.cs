@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 using Zavrsni.TeamOps.Entity.Models;
 using Zavrsni.TeamOps.JWT;
@@ -13,12 +14,13 @@ namespace Zavrsni.TeamOps.UserDomain.Service
         private readonly IUserValidator _userValidator;
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
-
-        public UserService(IUserValidator userValidator, IUserRepository userRepository, IConfiguration configuration)
+        private readonly IMapper _mapper;
+        public UserService(IUserValidator userValidator, IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
         {
             _userValidator = userValidator;
             _userRepository = userRepository;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<ServiceActionResult> SignUp(UserSignUpModel userSignUpModel)
@@ -37,9 +39,12 @@ namespace Zavrsni.TeamOps.UserDomain.Service
 
             userSignUpModel.Password = hashedPassword;
 
-            var dbResult = await _userRepository.PostAsync(userSignUpModel);
+            User user = _mapper.Map<User>(userSignUpModel);
+            await _userRepository.AddAsync(user);
 
-            result.Combine(dbResult);
+            UserNoSensitiveInfoDTO createdUser = _mapper.Map<UserNoSensitiveInfoDTO>(user);
+
+            result.SetResultCreated(createdUser);
             return result;
         }
 
@@ -47,34 +52,28 @@ namespace Zavrsni.TeamOps.UserDomain.Service
         {
             var result = new ServiceActionResult();
 
-            var getUserResult = await _userRepository.GetAsync(signInModel.usernameOrEmail);
-            result.Combine(getUserResult);
-            if(getUserResult.IsSuccess)
+            var user = await _userRepository.GetAsync(signInModel.usernameOrEmail);
+            try
             {
-                try
-                {
-                    var user = (User)getUserResult.Data!;
-                    var storedPasswordDetails = user.Password.Split(':');
-                    var salt = Convert.FromBase64String(storedPasswordDetails[0]);
-                    var storedHashedPassword = storedPasswordDetails[1];
-                    var hashedPassword = HashPassword(signInModel.password, salt);
+                var storedPasswordDetails = user.Password.Split(':');
+                var salt = Convert.FromBase64String(storedPasswordDetails[0]);
+                var storedHashedPassword = storedPasswordDetails[1];
+                var hashedPassword = HashPassword(signInModel.password, salt);
 
-                    if (hashedPassword != storedHashedPassword)
-                    {
-                        result.SetAuthenticationFailed("Passwords do not match");
-                    }
-                    else
-                    {
-                        var jwt = JwtHelper.IssueNewToken(user,_configuration);
-                        result.UpdateData(jwt);
-                    }                
-                }
-                catch (Exception)
+                if (hashedPassword != storedHashedPassword)
                 {
-                    result.SetInternalError();
+                    result.SetAuthenticationFailed("Passwords do not match");
+                }
+                else
+                {
+                    var jwt = JwtHelper.IssueNewToken(user, _configuration);
+                    result.SetOk(jwt,"Successfully signed in");
                 }
             }
-
+            catch (Exception)
+            {
+                throw;
+            }
             return result;
         }
 

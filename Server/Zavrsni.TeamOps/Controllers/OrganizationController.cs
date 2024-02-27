@@ -1,54 +1,59 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Zavrsni.TeamOps.OrganizationDomain;
 using Zavrsni.TeamOps.OrganizationDomain.Models;
+using Zavrsni.TeamOps.OrganizationDomain.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Zavrsni.TeamOps.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrganizationController : ControllerBase
     {
-        private readonly IOrganizationRepository _organizationRepository;
+        private readonly IOrganizationService _organizationService;
 
-        public OrganizationController(IOrganizationRepository organizationRepository)
+        public OrganizationController(IOrganizationService organizationService)
         {
-            _organizationRepository = organizationRepository;
-        }
-
-        // GET: api/<OrganizationController>
-        [HttpGet]
-        public string Get()
-        {
-            return "Ok";
+            _organizationService = organizationService;
         }
 
         // GET api/<OrganizationController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("owner/{ownerId}")]
+        public async Task<IActionResult> GetByOwnerId(Guid ownerId)
         {
-            return "value";
+            var result = await _organizationService.GetOrganizationsByOwnerId(ownerId);
+            return result.GetResponseResult();
         }
 
         // POST api/<OrganizationController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] OrganizationPostModel value)
         {
-            var postResult = await _organizationRepository.Post(value);
-            return postResult.GetResponseResult();
+            var serviceResult = await _organizationService.CreateOrganization(value);
+            return serviceResult.GetResponseResult();
         }
 
+        [HttpPost("add-user")]
+        public async Task<IActionResult> AddUser([FromBody] AddUserPostModel addUserPostModel)
+        {
+            var serviceResult = await _organizationService.AddUser(addUserPostModel.UserId, addUserPostModel.OrganizationId);
+            return serviceResult.GetResponseResult();
+        }
         // PUT api/<OrganizationController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> ChangeNameAsync(Guid id, [FromBody] string newName)
         {
+            var result = await _organizationService.ChangeOrganizationName(id, newName);
+            return result.GetResponseResult();
         }
 
         // DELETE api/<OrganizationController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{organizationId}")]
+        public async Task<IActionResult> DeleteAsync(Guid organizationId)
         {
+            var result = await _organizationService.RemoveOrganization(organizationId);
+            return result.GetResponseResult();
         }
     }
 }

@@ -9,10 +9,8 @@ namespace Zavrsni.TeamOps.Entity.Models
         public string Surname { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-
-        [Comment("SHA-256 hash alg")]
         public string Password { get; set; }
 
-        public List<Organization> Organizations { get; }
+        public List<Organization> Organizations { get; } = new List<Organization>();
     }
 }

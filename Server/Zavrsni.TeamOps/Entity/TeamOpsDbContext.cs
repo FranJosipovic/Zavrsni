@@ -17,6 +17,12 @@ namespace Zavrsni.TeamOps.Entity
         {
             modelBuilder.Entity<Organization>();
             modelBuilder.Entity<User>();
+
+            modelBuilder.Entity<Organization>()
+                        .HasOne(o => o.Owner)
+                        .WithMany()
+                        .HasForeignKey(o => o.OwnerId)
+                        .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

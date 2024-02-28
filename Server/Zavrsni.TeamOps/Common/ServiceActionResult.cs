@@ -50,7 +50,7 @@ namespace Zavrsni.TeamOps
         public void SetBadRequest(string message)
         {
             this.Data = null;
-            this.IsSuccess = true;
+            this.IsSuccess = false;
             this.StatusMessage = message;
             this.StatusCode = 400;
         }

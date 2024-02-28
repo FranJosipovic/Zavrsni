@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Zavrsni.TeamOps.Entity.Models;
 using Zavrsni.TeamOps.OrganizationDomain.Models;
+using Zavrsni.TeamOps.ProjectDomain.Models;
 using Zavrsni.TeamOps.UserDomain.Models;
 
 namespace Zavrsni.TeamOps
@@ -11,6 +12,7 @@ namespace Zavrsni.TeamOps
             CreateMap<UserSignUpModel,User>().ReverseMap();
             CreateMap<OrganizationPostModel,Organization>().ReverseMap();
             CreateMap<User, UserNoSensitiveInfoDTO>();
+            CreateMap<CreateProjectModel, Project>();
         }
     }
 }

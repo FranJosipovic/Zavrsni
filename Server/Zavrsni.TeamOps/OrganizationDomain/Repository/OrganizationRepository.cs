@@ -109,7 +109,7 @@ namespace Zavrsni.TeamOps.OrganizationDomain.Repository
             try
             {
                 var organization = await _db.Organizations.FindAsync(organizationId);
-                if(organization is null)
+                if (organization is null)
                 {
                     throw new ObjectNotFoundException("Organization not found");
                 }
@@ -134,5 +134,34 @@ namespace Zavrsni.TeamOps.OrganizationDomain.Repository
             }
         }
 
+        public async Task<bool> UserIsOwnerOfOrganizationAsync(Guid userId, Guid organizationId)
+        {
+            try
+            {
+                return await _db.Organizations.AnyAsync(o => o.Id == organizationId && o.OwnerId == userId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Organization> GetByProjectIdAsync(Guid projectId)
+        {
+            try
+            {
+                var organizationId = await _db.Projects.AsNoTracking().Where(p => p.Id == projectId).Select(p => p.OrganizationId).FirstOrDefaultAsync();
+                var organization = await _db.Organizations.FindAsync(organizationId);
+                if(organization is null)
+                {
+                    throw new ObjectNotFoundException("Couldnt find organization by project");
+                }
+                return organization;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -1,0 +1,8 @@
+﻿namespace Zavrsni.TeamOps.Common
+{
+    public class CollectionResponseData<T>
+    {
+        public IList<T> Items { get; set; }
+        public int Count { get; set; }
+    }
+}

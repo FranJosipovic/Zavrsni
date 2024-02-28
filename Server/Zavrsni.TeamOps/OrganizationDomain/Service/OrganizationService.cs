@@ -59,9 +59,9 @@ namespace Zavrsni.TeamOps.OrganizationDomain.Service
             }
 
             var organizations = await _organizationRepository.GetByUserIdAsync(ownerId);
-            serviceActionResult.SetOk(new
+            serviceActionResult.SetOk(new CollectionResponseData<Organization>
             {
-                Organizations = organizations,
+                Items = organizations,
                 Count = organizations.Count
             }, "Action Successfull");
             return serviceActionResult;

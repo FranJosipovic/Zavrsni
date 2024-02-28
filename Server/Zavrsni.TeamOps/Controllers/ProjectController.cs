@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Zavrsni.TeamOps.ProjectDomain.Models;
+using Zavrsni.TeamOps.ProjectDomain.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,34 @@ namespace Zavrsni.TeamOps.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        // GET: api/<ProjectController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+
+        private readonly IProjectService _projectService;
+
+        public ProjectController(IProjectService projectService)
         {
-            return new string[] { "value1", "value2" };
+            _projectService = projectService;
         }
 
-        // GET api/<ProjectController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+
+        [HttpGet("projects/organization/{organizationId}")]
+        public async Task<IActionResult> GetByOrganizationAsync([FromRoute] Guid organizationId)
         {
-            return "value";
+            var result = await _projectService.GetByOrganizationId(organizationId);
+            return result.GetResponseResult();
         }
 
-        // POST api/<ProjectController>
+        [HttpPost("user-to-project")]
+        public async Task<IActionResult> AddUserToProjectAsync([FromBody] AddUserToProjectModel model)
+        {
+            var result = await _projectService.AddUserToProject(model);
+            return result.GetResponseResult();
+        }
+
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectModel project)
         {
-        }
-
-        // PUT api/<ProjectController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ProjectController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var result = await _projectService.CreateNewProject(project);
+            return result.GetResponseResult();
         }
     }
 }

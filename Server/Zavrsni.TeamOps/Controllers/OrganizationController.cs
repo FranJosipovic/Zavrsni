@@ -18,7 +18,6 @@ namespace Zavrsni.TeamOps.Controllers
             _organizationService = organizationService;
         }
 
-        // GET api/<OrganizationController>/5
         [HttpGet("owner/{ownerId}")]
         public async Task<IActionResult> GetByOwnerId(Guid ownerId)
         {
@@ -26,7 +25,6 @@ namespace Zavrsni.TeamOps.Controllers
             return result.GetResponseResult();
         }
 
-        // POST api/<OrganizationController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] OrganizationPostModel value)
         {
@@ -40,7 +38,7 @@ namespace Zavrsni.TeamOps.Controllers
             var serviceResult = await _organizationService.AddUser(addUserPostModel.UserId, addUserPostModel.OrganizationId);
             return serviceResult.GetResponseResult();
         }
-        // PUT api/<OrganizationController>/5
+
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangeNameAsync(Guid id, [FromBody] string newName)
         {
@@ -48,7 +46,6 @@ namespace Zavrsni.TeamOps.Controllers
             return result.GetResponseResult();
         }
 
-        // DELETE api/<OrganizationController>/5
         [HttpDelete("{organizationId}")]
         public async Task<IActionResult> DeleteAsync(Guid organizationId)
         {

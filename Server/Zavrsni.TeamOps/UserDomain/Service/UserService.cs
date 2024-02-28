@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
-using Zavrsni.TeamOps.Common;
 using Zavrsni.TeamOps.Entity.Models;
 using Zavrsni.TeamOps.JWT;
 using Zavrsni.TeamOps.UserDomain.Models;

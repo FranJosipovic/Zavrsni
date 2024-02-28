@@ -8,6 +8,8 @@ using Zavrsni.TeamOps.Filters;
 using Zavrsni.TeamOps.OrganizationDomain.Repository;
 using Zavrsni.TeamOps.OrganizationDomain.Service;
 using Zavrsni.TeamOps.OrganizationDomain.Validators;
+using Zavrsni.TeamOps.ProjectDomain.Repository;
+using Zavrsni.TeamOps.ProjectDomain.Services;
 using Zavrsni.TeamOps.UserDomain.Repository;
 using Zavrsni.TeamOps.UserDomain.Service;
 using Zavrsni.TeamOps.UserDomain.Validators;
@@ -36,9 +38,11 @@ builder.Services.AddDbContext<TeamOpsDbContext>(db => db.UseSqlServer(builder.Co
 
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<IOrganizationValidator, OrganizationValidator>();

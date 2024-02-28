@@ -12,5 +12,7 @@ namespace Zavrsni.TeamOps.OrganizationDomain.Repository
         Task<Organization> ChangeNameAsync(Guid organizationId, string newName);
         Task RemoveAsync(Guid organizationId);
         Task<bool> OrganizationExists(Guid organizationId);
+        Task<bool> UserIsOwnerOfOrganizationAsync(Guid userId, Guid organizationId);
+        Task<Organization> GetByProjectIdAsync(Guid projectId);
     }
 }

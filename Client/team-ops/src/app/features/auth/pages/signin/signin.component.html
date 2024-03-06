@@ -1,0 +1,20 @@
+<div class="wrapper">
+    <h1 class="title">Team'Ops</h1>
+    <form [formGroup]="signInForm" (submit)="onSubmit()">
+        <h3>Sign in</h3>
+        <div class="form-control">
+            <label for="usernameOrEmail">Username or Email</label>
+            <input type="text" name="usernameOrEmail" id="usernameOrEmail" formControlName="usernameOrEmail" placeholder="Email or password..." required>
+            <div *ngIf="usernameOrEmailErrors?.['required']" class="error">*This field is required</div>
+        </div>
+    
+        <div class="form-control">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" formControlName="password" placeholder="password...">
+            <div *ngIf="passwordErrors?.['required']" class="error">*This field is required</div>
+        </div>
+    
+        <button type="submit">Submit</button>
+        <a href="/signup"><p class="sign-up">Sign Up</p></a>
+    </form>
+</div>

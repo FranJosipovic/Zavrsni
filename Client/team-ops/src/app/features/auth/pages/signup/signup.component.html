@@ -1,0 +1,109 @@
+<div class="wrapper">
+  <h1 class="title">Team'Ops</h1>
+  <form [formGroup]="signUpForm" (submit)="onSubmit()">
+    <h3>Sign up</h3>
+
+    <div class="form-control-wrapper">
+      <div class="form-control">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          formControlName="name"
+          placeholder="Name..."
+        />
+        <div *ngIf="nameErrors?.['required']" class="error">
+          *This field is required
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="surname">Surname</label>
+        <input
+          type="text"
+          name="surname"
+          id="surname"
+          formControlName="surname"
+          placeholder="Surname..."
+        />
+        <div *ngIf="surnameErrors?.['required']" class="error">
+          *This field is required
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          formControlName="username"
+          placeholder="Username..."
+        />
+        <div *ngIf="usernameErrors?.['required']" class="error">
+          *This field is required
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="email">Email</label>
+        <input
+          type="text"
+          name="email"
+          id="email"
+          formControlName="email"
+          placeholder="Email..."
+        />
+        <div *ngIf="emailErrors?.['required']" class="error">
+          *This field is required
+        </div>
+        <div *ngIf="emailErrors?.['email']" class="error">
+          *Wrong email format
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          formControlName="password"
+          placeholder="password..."
+        />
+        <div *ngIf="passwordErrors?.['required']" class="error">
+          *This field is required
+        </div>
+        <div *ngIf="passwordErrors?.['pattern']" class="error">
+          *Password requirements:<br />
+          **one digit<br />
+          **one special character<br />
+          **one letter<br />
+          **at least 8 characters
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          placeholder="confirm password..."
+        />
+        <div *ngIf="confirmPasswordErrors?.['required']" class="error">
+          *This field is required
+        </div>
+      </div>
+
+      <button type="submit">Submit</button>
+      <div *ngIf="formErrors?.['passwordsMatch']" class="error">
+        *Passwords do not match
+      </div>
+    </div>
+
+    <a href="/login"><p class="sign-in">Sign In</p></a>
+  </form>
+</div>

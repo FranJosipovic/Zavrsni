@@ -4,15 +4,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Zavrsni.TeamOps.Entity;
+using Zavrsni.TeamOps.Features.Organizations.Repository;
+using Zavrsni.TeamOps.Features.Organizations.Service;
+using Zavrsni.TeamOps.Features.Organizations.Validators;
+using Zavrsni.TeamOps.Features.Projects.Repository;
+using Zavrsni.TeamOps.Features.Projects.Services;
+using Zavrsni.TeamOps.Features.Users.Repository;
+//using Zavrsni.TeamOps.Features.Users.Service;
+using Zavrsni.TeamOps.Features.Users.Validators;
 using Zavrsni.TeamOps.Filters;
-using Zavrsni.TeamOps.OrganizationDomain.Repository;
-using Zavrsni.TeamOps.OrganizationDomain.Service;
-using Zavrsni.TeamOps.OrganizationDomain.Validators;
-using Zavrsni.TeamOps.ProjectDomain.Repository;
-using Zavrsni.TeamOps.ProjectDomain.Services;
-using Zavrsni.TeamOps.UserDomain.Repository;
-using Zavrsni.TeamOps.UserDomain.Service;
-using Zavrsni.TeamOps.UserDomain.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,12 +40,26 @@ builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
-builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<IOrganizationValidator, OrganizationValidator>();
+
+var corsPolicyName = "TeamOpsAllowAnyOrigins";
+builder.Services.AddCors(setupAction =>
+{
+    setupAction.AddPolicy(corsPolicyName,
+    configurePolicy =>
+    {
+        configurePolicy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();  //WithOrigins("https://...")
+    });
+});
+
+var assembly = typeof(Program).Assembly;
+
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
 
 builder.Services.AddControllers((options) =>
 {
@@ -96,6 +110,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(corsPolicyName);
 
 app.UseAuthentication();
 app.UseAuthorization();

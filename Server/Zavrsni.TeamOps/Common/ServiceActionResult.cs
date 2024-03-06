@@ -13,10 +13,10 @@ namespace Zavrsni.TeamOps
         {
             get
             {
-                return new
+                return new ResponseModel
                 {
                     StatusCode = this.StatusCode,
-                    StatusMessage = this.StatusMessage,
+                    Message = this.StatusMessage,
                     Data = this.Data,
                     IsSuccess = this.IsSuccess,
                 };

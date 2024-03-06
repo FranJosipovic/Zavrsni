@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Zavrsni.TeamOps.ProjectDomain.Models;
-using Zavrsni.TeamOps.ProjectDomain.Services;
+using Zavrsni.TeamOps.Features.Projects.Models;
+using Zavrsni.TeamOps.Features.Projects.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

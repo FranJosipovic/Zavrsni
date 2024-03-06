@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { SignInRequest } from '../../../../core/user/interfaces';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-signin',
@@ -17,12 +18,13 @@ import { SignInRequest } from '../../../../core/user/interfaces';
 })
 export class SigninComponent implements OnInit {
   public usernameOrEmailErrors: ValidationErrors | null = null;
-  public passwordErrors: ValidationErrors | null = null
+  public passwordErrors: ValidationErrors | null = null;
 
   constructor(
     private userService: AuthService,
     private router: Router,
-    private userStore: UserStore
+    private userStore: UserStore,
+    private toastr: ToastrService
   ) {
     if (this.userStore.getState().isAuthenticated) {
       this.router.navigateByUrl('/main');
@@ -34,16 +36,14 @@ export class SigninComponent implements OnInit {
       Validators.required,
       Validators.minLength(4),
     ]),
-    password: new FormControl('',[
-      Validators.required
-    ]),
+    password: new FormControl('', [Validators.required]),
   });
 
   ngOnInit(): void {}
 
   onSubmit() {
-    this.usernameOrEmailErrors = this.signInForm.get('usernameOrEmail')!.errors
-    this.passwordErrors = this.signInForm.get("password")!.errors
+    this.usernameOrEmailErrors = this.signInForm.get('usernameOrEmail')!.errors;
+    this.passwordErrors = this.signInForm.get('password')!.errors;
     if (this.usernameOrEmailErrors == null || this.passwordErrors == null) {
       this.signIn();
     }
@@ -53,7 +53,15 @@ export class SigninComponent implements OnInit {
     this.userService
       .signIn(this.signInForm.value as SignInRequest)
       .subscribe((data) => {
-        console.log(data);
+        this.toastr.show(
+          data.message,
+          'Sign in result',
+          {
+            closeButton: true,
+            timeOut: 3500,
+          },
+          data.isSuccess ? 'toast-success' : 'toast-error'
+        );
         if (data.isSuccess) {
           this.userStore.signIn(data.data?.user!, data.data?.token!);
           this.router.navigateByUrl('/main');

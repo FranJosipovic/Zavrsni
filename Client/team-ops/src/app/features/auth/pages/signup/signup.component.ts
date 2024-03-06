@@ -10,6 +10,7 @@ import { SignUpRequest } from '../../../../core/user/interfaces';
 import { UserStore } from '../../../../store/user.store';
 import { Router } from '@angular/router';
 import { signUpValidator } from '../../../../core/validators/password-match.validator';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-signup',
@@ -28,7 +29,8 @@ export class SignupComponent {
   constructor(
     private userService: AuthService,
     private router: Router,
-    private userStore: UserStore
+    private userStore: UserStore,
+    private toastr: ToastrService
   ) {
     if (this.userStore.getState().isAuthenticated) {
       this.router.navigateByUrl('/main');
@@ -76,6 +78,15 @@ export class SignupComponent {
       .signUp(this.signUpForm.value as SignUpRequest)
       .subscribe((data) => {
         console.log(data);
+        this.toastr.show(
+          data.message,
+          'Sign up result',
+          {
+            closeButton: true,
+            timeOut: 3500,
+          },
+          data.isSuccess ? 'toast-success' : 'toast-error'
+        );
         if (data.isSuccess) {
           this.router.navigateByUrl('/login');
         }

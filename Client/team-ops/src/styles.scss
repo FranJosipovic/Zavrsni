@@ -1,4 +1,40 @@
-@import 'ngx-toastr/toastr';
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use "@angular/material" as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$team-ops-primary: mat.define-palette(mat.$indigo-palette);
+$team-ops-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$team-ops-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$team-ops-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $team-ops-primary,
+      accent: $team-ops-accent,
+      warn: $team-ops-warn,
+    ),
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($team-ops-theme);
+
+@import "ngx-toastr/toastr";
 
 * {
   padding: 0;
@@ -12,4 +48,31 @@ body {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* For Chrome, Edge, and Safari */
+.card-container::-webkit-scrollbar {
+  width: 5px; 
+  height: 5px;
+  margin-left: 10px;
+}
+
+/* For Chrome, Edge, and Safari */
+.card-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Color of the thumb */
+  border-radius: 15px; /* Roundness of the thumb */
+}
+
+/* For Chrome, Edge, and Safari */
+.card-container::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0); /* Color of the track */
 }

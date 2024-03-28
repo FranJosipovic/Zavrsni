@@ -1,4 +1,14 @@
-<div class="wrapper">
+<mat-spinner
+  *ngIf="initialLoading"
+  style="
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  "
+>
+</mat-spinner>
+<div class="wrapper" *ngIf="!initialLoading">
   <h1 class="title">Team'Ops</h1>
   <form [formGroup]="signUpForm" (submit)="onSubmit()">
     <h3>Sign up</h3>

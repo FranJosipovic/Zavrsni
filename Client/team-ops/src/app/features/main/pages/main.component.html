@@ -1,2 +1,37 @@
-<p>main works!</p>
-<button (click)="logout()">Logout</button>
+<div class="wrapper">
+  <mat-toolbar
+    style="
+      background-color: white;
+      border-bottom: 0.1px solid rgb(211, 208, 208);
+    "
+  >
+    <h3><a href="main">Team'Ops</a></h3>
+    <span class="spacer"></span>
+    <button
+      class="user-button-icon"
+      [mat-menu-trigger-for]="profileMenu"
+      style="cursor: pointer"
+    >
+      {{ userState.name | firstLetter }}
+    </button>
+    <mat-menu #profileMenu="matMenu" xPosition="before">
+      <div class="profile-menu-item">
+        <div class="header">
+          <p>{{ userState.name }} {{ userState.surname }}</p>
+          <button (click)="signout()">Sign out</button>
+        </div>
+        <div class="body">
+          <div class="user-icon">{{ userState.name | firstLetter }}</div>
+          <div class="user-info">
+            <h3 style="margin-bottom: 10px">{{ userState.username }}</h3>
+            <p style="margin-bottom: 10px">{{ userState.email }}</p>
+            <a href="#">View account</a>
+          </div>
+        </div>
+      </div>
+    </mat-menu>
+  </mat-toolbar>
+  <div style="display: flex; flex-direction: column; flex: 1">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -4,7 +4,7 @@ using Zavrsni.TeamOps.Features.Projects.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Zavrsni.TeamOps.Controllers
+namespace Zavrsni.TeamOps.Features.Projects
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,6 +23,13 @@ namespace Zavrsni.TeamOps.Controllers
         public async Task<IActionResult> GetByOrganizationAsync([FromRoute] Guid organizationId)
         {
             var result = await _projectService.GetByOrganizationId(organizationId);
+            return result.GetResponseResult();
+        }
+
+        [HttpGet("{name}/projectId/{organizationId}")]
+        public async Task<IActionResult> GetIdByName(string name, Guid organizationId)
+        {
+            var result = await _projectService.GetProjectIdByName(name, organizationId);
             return result.GetResponseResult();
         }
 

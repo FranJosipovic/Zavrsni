@@ -1,0 +1,48 @@
+<mat-drawer-container class="content-container">
+  <mat-drawer mode="side" opened style="width: 260px">
+    <div class="mat-drawer-content-wrapper">
+      <div style="flex: 1">
+        @for (item of menu; track $index) {
+        <div
+          [ngClass]="item.isSelected ? 'selected-parent' : ''"
+          (click)="onSelectParentItemMenu(item.title)"
+          class="menu-parent"
+        >
+          <div class="icon">{{ item.title | firstLetter }}</div>
+          <p>
+            {{ item.title }}
+          </p>
+        </div>
+        <div [ngClass]="item.isSelected ? 'selected-parent' : ''">
+          @for (child of item.children; track $index) {
+          <div
+          (click)="onSelectChildItemMenu(item.title,child.title)"
+          [ngClass]="child.isSelected ? 'selected-child' : ''"
+            *ngIf="item.isSelected"
+            class="menu-child"
+            style="position: relative"
+          >
+            <div
+              *ngIf="child.isSelected"
+              style="position: absolute"
+              class="select-indicator"
+            ></div>
+            {{ child.title }}
+          </div>
+          }
+        </div>
+        }
+      </div>
+      <div class="organization-settings">
+        <mat-icon>settings</mat-icon>
+        <p>Project settings</p>
+      </div>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content style="padding: 25px; background: rgb(248, 246, 246)">
+    <div
+      class="mat-drawer-content-content-wrapper"
+      style="overflow-x: hidden"
+    ></div>
+  </mat-drawer-content>
+</mat-drawer-container>

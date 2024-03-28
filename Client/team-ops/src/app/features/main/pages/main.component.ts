@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { UserStore } from '../../../store/user.store';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ChildActivationEnd, NavigationEnd, Router } from '@angular/router';
+import { User } from '../../../core/user/interfaces';
+import { filter, tap } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -8,11 +10,26 @@ import { Router } from '@angular/router';
   styleUrl: './main.component.scss',
 })
 export class MainComponent {
-  constructor(private userStore: UserStore,private router:Router) {
-    console.log(this.userStore.getState());
+  public userState: User;
+  breadcrumbs: string[] = [];
+  constructor(
+    private userStore: UserStore,
+    private router: Router,
+    private activatedRoute:ActivatedRoute
+  ) {
+    this.userState = this.userStore.getState().user!;
+
+    this.router.events
+      .pipe(
+        filter(e => e instanceof NavigationEnd)
+      )
+      .subscribe((data:any) => {
+        console.log('route',activatedRoute.children);
+      })
   }
-  logout(){
-    this.userStore.logout()
-    this.router.navigateByUrl('')
+
+  signout() {
+    this.userStore.signout();
+    this.router.navigateByUrl('');
   }
 }

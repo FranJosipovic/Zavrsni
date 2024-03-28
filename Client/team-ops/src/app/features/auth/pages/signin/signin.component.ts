@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { SignInRequest } from '../../../../core/user/interfaces';
 import { ToastrService } from 'ngx-toastr';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-signin',
@@ -20,28 +21,33 @@ export class SigninComponent implements OnInit {
   public usernameOrEmailErrors: ValidationErrors | null = null;
   public passwordErrors: ValidationErrors | null = null;
 
+  public initialLoading: boolean = true;
+
   constructor(
     private userService: AuthService,
     private router: Router,
     private userStore: UserStore,
     private toastr: ToastrService
-  ) {
+  ) {}
+
+  signInForm = new FormGroup({
+    usernameOrEmail: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required),
+  });
+
+  ngOnInit(): void {
+    this.initialLoading = true;
+    console.log("hello")
     if (this.userStore.getState().isAuthenticated) {
+      this.initialLoading = false;
       this.router.navigateByUrl('/main');
+    }else{
+      this.initialLoading = false;
     }
   }
 
-  signInForm = new FormGroup({
-    usernameOrEmail: new FormControl('', [
-      Validators.required,
-      Validators.minLength(4),
-    ]),
-    password: new FormControl('', [Validators.required]),
-  });
-
-  ngOnInit(): void {}
-
   onSubmit() {
+    console.log("submit login")
     this.usernameOrEmailErrors = this.signInForm.get('usernameOrEmail')!.errors;
     this.passwordErrors = this.signInForm.get('password')!.errors;
     if (this.usernameOrEmailErrors == null || this.passwordErrors == null) {

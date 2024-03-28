@@ -24,6 +24,19 @@ namespace Zavrsni.TeamOps.Features.Projects.Services
             _userRepository = userRepository;
         }
 
+        public async Task<ServiceActionResult> GetProjectIdByName(string name, Guid organizationId)
+        {
+            ServiceActionResult serviceActionResult = new ServiceActionResult();
+            var id = await _projectRepository.GetIdByNameAsync(name, organizationId);
+            if (id == null)
+            {
+                serviceActionResult.SetNotFound($"Project {name} with provided organizationId does not exists");
+                return serviceActionResult;
+            }
+            serviceActionResult.SetOk(new { Id = id }, "Action Successfull");
+            return serviceActionResult;
+        }
+
         public async Task<ServiceActionResult> GetByOrganizationId(Guid organizationId)
         {
             var serviceActionResult = new ServiceActionResult();

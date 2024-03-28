@@ -34,7 +34,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
      };
  });
 
-builder.Services.AddDbContext<TeamOpsDbContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("TeamOpsConnectionString")), ServiceLifetime.Singleton);
+builder.Services.AddDbContext<TeamOpsDbContext>(db =>
+        db.UseSqlServer(builder.Configuration.GetConnectionString("TeamOpsConnectionString")), ServiceLifetime.Singleton);
 
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -66,7 +67,7 @@ builder.Services.AddControllers((options) =>
     options.Filters.Add(new ExceptionFilter());
 }).AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

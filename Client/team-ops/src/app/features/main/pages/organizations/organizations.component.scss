@@ -1,0 +1,183 @@
+:host {
+  height: 100%;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+}
+
+.mat-drawer-content-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  overflow-x: hidden !important;
+}
+
+.organization-card {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  margin-top: 15px;
+  padding: 10px;
+
+  .organization-icon {
+    height: 30px;
+    width: 30px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: rgb(27, 117, 87);
+    margin-left: 10px;
+  }
+}
+
+.organization-card:hover {
+  cursor: pointer;
+  p {
+    text-decoration: underline;
+  }
+}
+
+.organization-settings {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  gap: 10px;
+}
+
+.organization-settings:hover {
+  cursor: pointer;
+  background-color: rgb(240, 236, 236);
+}
+
+.selected-indicator {
+  position: absolute;
+  height: 100%;
+  width: 5px;
+  left: 0;
+  background: rgb(27, 141, 248);
+}
+
+.selected {
+  background-color: rgb(132, 191, 247);
+}
+
+.mat-drawer-content-content-wrapper {
+  height: 100%;
+  width: 100%;
+  display: block;
+  // padding: 25px;
+}
+
+.card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  overflow-x: auto;
+  margin: 15px 15px;
+  padding-bottom: 10px;
+  padding: 10px 0 20px;
+}
+
+.card {
+  cursor: pointer;
+  margin-top: 10px;
+  flex-grow: 1;
+  min-width: 300px;
+  max-width: 500px;
+  height: 150px;
+  margin-right: 32px;
+  flex-basis: 300px;
+  border-radius: 4px;
+  background-color: white;
+
+  display: flex;
+  flex-direction: row;
+
+  .icon-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .info-wrapper {
+    flex: 5;
+    padding: 10px;
+    p {
+      color: rgb(173, 169, 169);
+      margin-top: 10px;
+    }
+  }
+
+  .project-icon {
+    background-color: rgb(31, 66, 7);
+    height: 40px;
+    width: 40px;
+    border-radius: 10%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+}
+
+.card-list-container {
+  overflow-x: hidden;
+  padding: 15px;
+
+  .card-list-item {
+    cursor: pointer;
+    margin-top: 5px;
+    width: 100%;
+    height: 85px;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border-radius: 4px;
+    border-bottom: 0.25px solid lightgrey;
+  }
+
+  .icon-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+  }
+
+  .info-wrapper {
+    flex: 9;
+    padding-top: 10px;
+    p {
+      color: rgb(173, 169, 169);
+      margin-top: 10px;
+    }
+  }
+
+  .project-icon {
+    background-color: rgb(31, 66, 7);
+    height: 40px;
+    width: 40px;
+    border-radius: 10%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+}

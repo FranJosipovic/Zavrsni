@@ -8,5 +8,6 @@ namespace Zavrsni.TeamOps.Features.Projects.Repository
         Task<bool> UserIsPartOfProject(Guid userId, Guid projectId);
         Task AddUserToProjectAsync(Guid userId, Guid projectId);
         Task<IList<Project>> GetByOrganizationIdAsync(Guid organizationId);
+        Task<Guid?> GetIdByNameAsync(string name, Guid organizationId);
     }
 }

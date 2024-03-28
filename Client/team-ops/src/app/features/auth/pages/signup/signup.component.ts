@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit {
   public nameErrors: ValidationErrors | null = null;
   public surnameErrors: ValidationErrors | null = null;
   public usernameErrors: ValidationErrors | null = null;
@@ -26,16 +26,14 @@ export class SignupComponent {
   public confirmPasswordErrors: ValidationErrors | null = null;
   public formErrors: ValidationErrors | null = null;
 
+  public initialLoading: boolean = true;
+
   constructor(
     private userService: AuthService,
     private router: Router,
     private userStore: UserStore,
     private toastr: ToastrService
-  ) {
-    if (this.userStore.getState().isAuthenticated) {
-      this.router.navigateByUrl('/main');
-    }
-  }
+  ) {}
 
   signUpForm = new FormGroup(
     {
@@ -43,13 +41,24 @@ export class SignupComponent {
       surname: new FormControl('', [Validators.required]),
       username: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required,Validators.pattern("^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}$")]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{8,}$'),
+      ]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
     { validators: signUpValidator }
   );
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.initialLoading = true;
+    if (this.userStore.getState().isAuthenticated) {
+      this.initialLoading = false;
+      this.router.navigateByUrl('/main');
+    }else{
+      this.initialLoading = false;
+    }
+  }
 
   onSubmit() {
     this.nameErrors = this.signUpForm.get('name')!.errors;
@@ -59,7 +68,7 @@ export class SignupComponent {
     this.passwordErrors = this.signUpForm.get('password')!.errors;
     this.confirmPasswordErrors = this.signUpForm.get('confirmPassword')!.errors;
     this.formErrors = this.signUpForm.errors;
-    console.log(this.formErrors)
+    console.log(this.formErrors);
     if (
       this.nameErrors == null &&
       this.surnameErrors == null &&

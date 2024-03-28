@@ -2,6 +2,7 @@
 using System.Data.Entity.Core;
 using Zavrsni.TeamOps.Entity;
 using Zavrsni.TeamOps.Entity.Models;
+using Zavrsni.TeamOps.Features.Organizations.Models;
 
 namespace Zavrsni.TeamOps.Features.Organizations.Repository
 {
@@ -11,6 +12,19 @@ namespace Zavrsni.TeamOps.Features.Organizations.Repository
         public OrganizationRepository(TeamOpsDbContext db)
         {
             _db = db;
+        }
+
+        public async Task<Guid?> GetIdByNameAsync(string name)
+        {
+            try
+            {
+                var id = await _db.Organizations.AsNoTracking().Where(o=>o.Name == name).Select(o=>o.Id).FirstOrDefaultAsync();
+                return id == Guid.Empty ? null : id;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task AddUserToOrganizationAsync(Guid userId, Guid organizationId)
@@ -54,7 +68,25 @@ namespace Zavrsni.TeamOps.Features.Organizations.Repository
                 throw;
             }
         }
+        public async Task<Organization> GetWithRelatedAsync(Guid organizationId)
+        {
+            try
+            {
+                var organization = await _db.Organizations
+                    .Include(o => o.Projects).ThenInclude(p => p.Users)
+                    .Include(o => o.Users)
+                    .Include(o => o.Owner)
+                    .AsNoTracking()
+                    .Where(o => o.Id == organizationId)
+                    .FirstOrDefaultAsync() ?? throw new ObjectNotFoundException("Organization not found");
 
+                return organization;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public async Task<Organization> GetAsync(Guid organizationId)
         {
             try
@@ -80,6 +112,44 @@ namespace Zavrsni.TeamOps.Features.Organizations.Repository
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public async Task<IList<Organization>> GetWithUserIdAsync(Guid userId)
+        {
+            try
+            {
+                var organizations = await _db.Organizations
+                    .Include(o => o.Owner)
+                    .Include(o => o.Projects.Where(p => p.Users.Any(u => u.Id == userId)))
+                    .AsNoTracking()
+                    .Where(o => o.Users.Any(u => u.Id == userId))
+                    .ToListAsync();
+                return organizations;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Organization> UpdateAsync(UpdateOrganizationDTO updateOrganizationDTO)
+        {
+            try
+            {
+                var organization = await _db.Organizations.FindAsync(updateOrganizationDTO.Id)
+                    ?? throw new ObjectNotFoundException("Organization not found");
+
+                organization.Description = updateOrganizationDTO.Description;
+                organization.Name = updateOrganizationDTO.Name;
+                await _db.SaveChangesAsync();
+                return organization;
+
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }
@@ -150,7 +220,10 @@ namespace Zavrsni.TeamOps.Features.Organizations.Repository
         {
             try
             {
-                var organizationId = await _db.Projects.AsNoTracking().Where(p => p.Id == projectId).Select(p => p.OrganizationId).FirstOrDefaultAsync();
+                var organizationId = await _db.Projects.AsNoTracking()
+                    .Where(p => p.Id == projectId)
+                    .Select(p => p.OrganizationId)
+                    .FirstOrDefaultAsync();
                 var organization = await _db.Organizations.FindAsync(organizationId);
                 if (organization is null)
                 {

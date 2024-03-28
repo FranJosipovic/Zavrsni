@@ -14,6 +14,19 @@ namespace Zavrsni.TeamOps.Features.Projects.Repository
             _db = db;
         }
 
+        public async Task<Guid?> GetIdByNameAsync(string name, Guid organizationId)
+        {
+            try
+            {
+                var id = await _db.Projects.AsNoTracking().Where(o => o.Name == name && o.OrganizationId == organizationId).Select(o => o.Id).FirstOrDefaultAsync();
+                return id == Guid.Empty ? null : id;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Project> AddAsync(Project project)
         {
             try

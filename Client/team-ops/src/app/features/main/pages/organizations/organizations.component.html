@@ -1,0 +1,108 @@
+<ng-container *ngIf="loadingProjects; else elseTemplate">
+  <mat-spinner></mat-spinner>
+</ng-container>
+<ng-template #elseTemplate>
+  <mat-drawer-container class="content-container">
+    <mat-drawer mode="side" opened style="width: 260px">
+      <div class="mat-drawer-content-wrapper">
+        <div>
+          <div style="padding: 10px;">My Organizations</div>
+          @for (organization of myOrganizations; track $index) {
+          <div
+            style="position: relative"
+            class="organization-card"
+            (click)="onOrganizationSelect(organization.id)"
+            [class]="
+              organization.id == selectedOrganization?.id ? 'selected' : ''
+            "
+          >
+            <div
+              *ngIf="organization.id == selectedOrganization?.id"
+              class="selected-indicator"
+            ></div>
+            <div class="organization-icon">
+              {{ organization.name | firstLetter }}
+            </div>
+            <p>{{ organization.name }}</p>
+          </div>
+          }
+          <div style="padding: 20px"><a href="#">New organization</a></div>
+          <div style="padding: 10px;">Participating organizations</div>
+          @for (organization of participatingOrganizations; track $index) {
+          <div
+            style="position: relative"
+            class="organization-card"
+            (click)="onOrganizationSelect(organization.id)"
+            [class]="
+              organization.id == selectedOrganization?.id ? 'selected' : ''
+            "
+          >
+            <div
+              *ngIf="organization.id == selectedOrganization?.id"
+              class="selected-indicator"
+            ></div>
+            <div class="organization-icon">
+              {{ organization.name | firstLetter }}
+            </div>
+            <p>{{ organization.name }}</p>
+          </div>
+          }
+        </div>
+        <div class="organization-settings" (click)="onSettingsClick()">
+          <mat-icon>settings</mat-icon>
+          <p>Organization settings</p>
+        </div>
+      </div>
+    </mat-drawer>
+    <mat-drawer-content style="padding: 25px; background: rgb(248, 246, 246)">
+      <div
+        class="mat-drawer-content-content-wrapper"
+        style="overflow-x: hidden"
+      >
+        <h4>{{ selectedOrganization?.name }}</h4>
+        <mat-tab-group
+          mat-stretch-tabs="false"
+          mat-align-tabs="start"
+          style="margin-top: 15px"
+        >
+          <mat-tab label="Projects" style="padding: 15px">
+            @if (projects.length == 0) {
+            <div>No Projects...<br /><a href="#" *ngIf="selectedOrganization?.ownerId === userState.id">Create Project</a></div>
+            }
+            <div class="card-container" style="margin-left: 15px">
+              @for (project of projects; track project) {
+              <div class="card mat-elevation-z8" (click)="onProjectNavigate(project.name)">
+                <div class="icon-wrapper">
+                  <div class="project-icon">
+                    {{ project.name | firstLetter }}
+                  </div>
+                </div>
+                <div class="info-wrapper">
+                  <h4>{{ project.name }}</h4>
+                  <p>{{ project.description }}</p>
+                </div>
+              </div>
+              }
+            </div>
+            <div class="card-list-container">
+              @for (project of projects; track project) {
+              <div class="card-list-item mat-elevation-z8" (click)="onProjectNavigate(project.name)">
+                <div class="icon-wrapper">
+                  <div class="project-icon">
+                    {{ project.name | firstLetter }}
+                  </div>
+                </div>
+                <div class="info-wrapper">
+                  <h4>{{ project.name }}</h4>
+                  <p>{{ project.description }}</p>
+                </div>
+              </div>
+              }
+            </div>
+          </mat-tab>
+          <mat-tab label="My Work Items">Nije jos implementirano</mat-tab>
+        </mat-tab-group>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</ng-template>

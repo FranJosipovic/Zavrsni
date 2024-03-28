@@ -38,7 +38,7 @@ namespace Zavrsni.TeamOps.Features.Users.Commands
                     var user = await _db.Users.Where(u => u.Username == request.UsernameOrEmail || u.Email == request.UsernameOrEmail).FirstOrDefaultAsync(cancellationToken: cancellationToken);
                     if (user is null)
                     {
-                        result.SetNotFound("Couldn't find user with password or email");
+                        result.SetNotFound("Couldn't find user with username or email");
                         return result;
                     }
                     var storedPasswordDetails = user.Password.Split(':');
@@ -48,7 +48,7 @@ namespace Zavrsni.TeamOps.Features.Users.Commands
 
                     if (hashedPassword != storedHashedPassword)
                     {
-                        result.SetAuthenticationFailed("Passwords do not match");
+                        result.SetAuthenticationFailed("Invalid password");
                         return result;
                     }
                     else

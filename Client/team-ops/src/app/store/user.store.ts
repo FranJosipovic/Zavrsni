@@ -38,7 +38,7 @@ export class UserStore {
     return state.token;
   }
 
-  logout(){
+  signout(){
     this.ls?.removeItem('state')
   }
 }

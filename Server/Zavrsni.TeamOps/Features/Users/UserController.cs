@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Zavrsni.TeamOps.Common.Connectors;
 using Zavrsni.TeamOps.Features.Users.Commands;
 using Zavrsni.TeamOps.Features.Users.Models;
 using Zavrsni.TeamOps.Features.Users.Queries;
@@ -13,10 +14,12 @@ namespace Zavrsni.TeamOps.Features.Users
     {
         private readonly ISender _sernder;
         private readonly IMapper _mapper;
-        public UserController(ISender sernder, IMapper mapper)
+        private readonly IGithubConnector _githubConnector;
+        public UserController(ISender sernder, IMapper mapper, IGithubConnector githubConnector)
         {
             _sernder = sernder;
             _mapper = mapper;
+            _githubConnector = githubConnector;
         }
 
         [HttpPost("signup")]
@@ -47,6 +50,21 @@ namespace Zavrsni.TeamOps.Features.Users
         public async Task<IActionResult> GetByProject([FromRoute] Guid projectId)
         {
             var querry = new GetUsersByProject.Querry { ProjectId = projectId };
+            var result = await _sernder.Send(querry);
+            return result.GetResponseResult();
+        }
+        [HttpGet("user/github-membership-status/{userName}")]
+        public async Task<IActionResult> GetUserMembershipStatus([FromRoute] string userName)
+        {
+            var querry = new GetUserMembershipStatus.Querry { GithubUser = userName };
+            var result = await _sernder.Send(querry);
+            return result.GetResponseResult();
+        }
+
+        [HttpGet("user/github/{q}")]
+        public async Task<IActionResult> SearchGithubUser([FromRoute] string q)
+        {
+            var querry = new SearchGithubUsers.Querry { q = q };
             var result = await _sernder.Send(querry);
             return result.GetResponseResult();
         }

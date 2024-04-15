@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Zavrsni.TeamOps.Common.Connectors;
+using Zavrsni.TeamOps.Common.Options;
 using Zavrsni.TeamOps.Entity;
 using Zavrsni.TeamOps.Features.Organizations.Repository;
 using Zavrsni.TeamOps.Features.Organizations.Service;
@@ -44,6 +47,9 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 //builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+
+//register connectors
+builder.Services.AddScoped<IGithubConnector,GithubConnector>();
 
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<IOrganizationValidator, OrganizationValidator>();
@@ -101,6 +107,20 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddOptions<GithubOptions>().BindConfiguration(GithubOptions.GitHubSettings);
+
+builder.Services.AddHttpClient("github", (serviceProvider, httpClient) =>
+{
+    var githubOptions = serviceProvider.GetRequiredService<IOptions<GithubOptions>>().Value;
+
+    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {githubOptions.AccessToken}");
+    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("dotnet-docs");
+    httpClient.DefaultRequestHeaders.Add("X-GitHub-Api-Version", githubOptions.XGitHubApiVersion);
+    httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

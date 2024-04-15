@@ -16,8 +16,8 @@
         <div [ngClass]="item.isSelected ? 'selected-parent' : ''">
           @for (child of item.children; track $index) {
           <div
-          (click)="onSelectChildItemMenu(item.title,child.title)"
-          [ngClass]="child.isSelected ? 'selected-child' : ''"
+            (click)="onSelectChildItemMenu(item.title, child.title)"
+            [ngClass]="child.isSelected ? 'selected-child' : ''"
             *ngIf="item.isSelected"
             class="menu-child"
             style="position: relative"
@@ -39,10 +39,7 @@
       </div>
     </div>
   </mat-drawer>
-  <mat-drawer-content style="padding: 25px; background: rgb(248, 246, 246)">
-    <div
-      class="mat-drawer-content-content-wrapper"
-      style="overflow-x: hidden"
-    ></div>
+  <mat-drawer-content class="mat-drawer-content-content-wrapper">
+      <router-outlet></router-outlet>
   </mat-drawer-content>
 </mat-drawer-container>

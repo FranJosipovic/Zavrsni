@@ -1,0 +1,10 @@
+<div>Header</div>
+<div class="content" role="main">
+  <ckeditor
+    [editor]="Editor"
+    data="<p>Hello from CKEditor5!</p>"
+    (ready)="onReady($event)"
+    (change)="onChange($event)"
+  >
+  </ckeditor>
+</div>

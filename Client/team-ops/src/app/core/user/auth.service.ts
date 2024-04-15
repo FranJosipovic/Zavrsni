@@ -31,6 +31,7 @@ export class AuthService {
   public signUp(
     requestModel: SignUpRequest
   ): Observable<HttpResponseModel<SignUpResponse>> {
+    console.log(requestModel)
     return this.httpClient
       .post('https://localhost:7048/api/User/signup', requestModel)
       .pipe(

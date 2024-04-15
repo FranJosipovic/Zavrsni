@@ -98,7 +98,6 @@ export class OrganizationSettingsComponent implements OnInit {
         this.loadOrganzationDetails()
       }
     });
-    
   }
 
   loadOrganzationDetails(){

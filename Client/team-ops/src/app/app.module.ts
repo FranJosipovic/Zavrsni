@@ -28,6 +28,7 @@ import { OrganizationSettingsComponent } from './features/main/pages/organizatio
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { ProjectComponent } from './features/main-projects/pages/project/project.component';
+import { SummaryComponent } from './features/main-projects/pages/overview/summary/summary.component';
 
 
 
@@ -40,6 +41,7 @@ import { ProjectComponent } from './features/main-projects/pages/project/project
     OrganizationsComponent,
     OrganizationSettingsComponent,
     ProjectComponent,
+    SummaryComponent
   ],
   imports: [
     CommonModule,

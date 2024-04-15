@@ -24,7 +24,7 @@ export class MainComponent {
         filter(e => e instanceof NavigationEnd)
       )
       .subscribe((data:any) => {
-        console.log('route',activatedRoute.children);
+        // console.log('route',activatedRoute.children);
       })
   }
 

@@ -15,6 +15,7 @@ export interface User {
   surname: string;
   username: string;
   token: string;
+  gitHubUser:string
 }
 
 export type UserAuthState = {
@@ -29,6 +30,8 @@ export type SignUpRequest = {
   username: string;
   email: string;
   pasword: string;
+  inviteeId:number;
+  gitHubUser: string
 };
 
 export type SignUpResponse = {

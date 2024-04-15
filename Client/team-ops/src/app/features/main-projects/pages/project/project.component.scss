@@ -1,5 +1,6 @@
 :host {
   height: 100%;
+  overflow-y: hidden;
 }
 
 .content-container {
@@ -7,6 +8,8 @@
   flex-direction: column;
   height: 100%;
   flex: 1;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .mat-drawer-content-wrapper {
@@ -15,6 +18,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.mat-drawer-content-content-wrapper {
+  padding: 25px;
+  background: rgb(248, 246, 246);
+  // max-height: 805px;
 }
 
 ::ng-deep .mat-drawer-inner-container {
@@ -35,14 +44,14 @@
   background-color: rgb(240, 236, 236);
 }
 
-.menu-parent{
+.menu-parent {
   padding: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 5px;
 
-  .icon{
+  .icon {
     height: 10px;
     width: 10px;
     border-radius: 4px;
@@ -53,26 +62,25 @@
     color: white;
     background-color: blue;
   }
-
 }
 
-.menu-child{
+.menu-child {
   padding: 10px;
   padding-left: 25px;
 }
 
-.select-indicator{
+.select-indicator {
   height: 100%;
   width: 5px;
   background-color: blue;
   left: 0;
-  top:0
+  top: 0;
 }
 
-.selected-parent{
+.selected-parent {
   background-color: lightgray;
 }
 
-.selected-child{
+.selected-child {
   background-color: gray;
 }

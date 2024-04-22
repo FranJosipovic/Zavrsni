@@ -29,6 +29,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { ProjectComponent } from './features/main-projects/pages/project/project.component';
 import { SummaryComponent } from './features/main-projects/pages/overview/summary/summary.component';
+import { CreateUpdateWikiComponent } from './features/main-projects/pages/overview/wiki/create-update-wiki/create-update-wiki.component';
 
 
 
@@ -41,7 +42,7 @@ import { SummaryComponent } from './features/main-projects/pages/overview/summar
     OrganizationsComponent,
     OrganizationSettingsComponent,
     ProjectComponent,
-    SummaryComponent
+    SummaryComponent,
   ],
   imports: [
     CommonModule,

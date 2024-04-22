@@ -3,14 +3,16 @@
 </ng-container>
 <ng-template #elseTemplate>
   <ng-container *ngIf="!hasConfirmedOrganization; else confirmedORganization">
-    <div class="org-not-confirmed">Please check your mail and confirm organization invitation</div>
+    <div class="org-not-confirmed">
+      Please check your mail and confirm organization invitation
+    </div>
   </ng-container>
   <ng-template #confirmedORganization>
     <mat-drawer-container class="content-container">
       <mat-drawer mode="side" opened style="width: 260px">
         <div class="mat-drawer-content-wrapper">
           <div>
-            <div style="padding: 10px;">My Organizations</div>
+            <div style="padding: 10px">My Organizations</div>
             @for (organization of myOrganizations; track $index) {
             <div
               style="position: relative"
@@ -31,7 +33,7 @@
             </div>
             }
             <div style="padding: 20px"><a href="#">New organization</a></div>
-            <div style="padding: 10px;">Participating organizations</div>
+            <div style="padding: 10px">Participating organizations</div>
             @for (organization of participatingOrganizations; track $index) {
             <div
               style="position: relative"
@@ -71,11 +73,20 @@
           >
             <mat-tab label="Projects" style="padding: 15px">
               @if (projects.length == 0) {
-              <div>No Projects...<br /><a href="#" *ngIf="selectedOrganization?.ownerId === userState.id">Create Project</a></div>
+              <div>
+                No Projects...<br /><a
+                  href="#"
+                  *ngIf="selectedOrganization?.ownerId === userState.id"
+                  >Create Project</a
+                >
+              </div>
               }
               <div class="card-container" style="margin-left: 15px">
                 @for (project of projects; track project) {
-                <div class="card mat-elevation-z8" (click)="onProjectNavigate(project.name)">
+                <div
+                  class="card mat-elevation-z8"
+                  (click)="onProjectNavigate(project.name)"
+                >
                   <div class="icon-wrapper">
                     <div class="project-icon">
                       {{ project.name | firstLetter }}
@@ -90,7 +101,10 @@
               </div>
               <div class="card-list-container">
                 @for (project of projects; track project) {
-                <div class="card-list-item mat-elevation-z8" (click)="onProjectNavigate(project.name)">
+                <div
+                  class="card-list-item mat-elevation-z8"
+                  (click)="onProjectNavigate(project.name)"
+                >
                   <div class="icon-wrapper">
                     <div class="project-icon">
                       {{ project.name | firstLetter }}
@@ -110,6 +124,4 @@
       </mat-drawer-content>
     </mat-drawer-container>
   </ng-template>
-  
-  
 </ng-template>

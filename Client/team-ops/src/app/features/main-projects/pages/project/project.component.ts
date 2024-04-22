@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { UserStore } from '../../../../store/user.store';
 import { User } from '../../../../core/user/interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,31 +23,39 @@ export class ProjectComponent implements OnInit {
     this.userState = userStore.getState().user!;
     this.baseRoute = router.url;
   }
-
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       console.log(data);
+      localStorage.setItem('projectId', data['ids'].projectId);
     });
     let route = this.buildRoute();
     this.router.navigateByUrl(route);
-    this.setDynamicMaxHeight()
+    // this.setDynamicMaxHeight()
   }
 
   setDynamicMaxHeight() {
     const windowHeight = window.innerHeight;
-    const drawerContainer = this.el.nativeElement.querySelector('.content-container');
-    const drawerContent = this.el.nativeElement.querySelector('.mat-drawer-content-content-wrapper');
-    
+    const drawerContainer =
+      this.el.nativeElement.querySelector('.content-container');
+    const drawerContent = this.el.nativeElement.querySelector(
+      '.mat-drawer-content-content-wrapper'
+    );
+
     const containerHeight = drawerContainer.offsetHeight;
     const headerFooterHeight = containerHeight - drawerContent.offsetHeight;
 
     // Calculate dynamic max height
     let headerHeight = 64;
-    let padding = 50
-    const dynamicMaxHeight = windowHeight - headerFooterHeight - headerHeight - padding;
-    
+    let padding = 50;
+    const dynamicMaxHeight =
+      windowHeight - headerFooterHeight - headerHeight - padding;
+
     // Set dynamic max height to .mat-drawer-content-content-wrapper
-    this.renderer.setStyle(drawerContent, 'max-height', dynamicMaxHeight + 'px');
+    this.renderer.setStyle(
+      drawerContent,
+      'max-height',
+      dynamicMaxHeight + 'px'
+    );
   }
 
   public menu = [

@@ -1,7 +1,7 @@
 <mat-drawer-container class="content-container">
   <mat-drawer mode="side" opened style="width: 260px">
     <div class="mat-drawer-content-wrapper">
-      <div style="flex: 1">
+      <div>
         @for (item of menu; track $index) {
         <div
           [ngClass]="item.isSelected ? 'selected-parent' : ''"
@@ -33,13 +33,15 @@
         </div>
         }
       </div>
-      <div class="organization-settings">
+      <!-- <div class="organization-settings">
         <mat-icon>settings</mat-icon>
         <p>Project settings</p>
-      </div>
+      </div> -->
     </div>
   </mat-drawer>
-  <mat-drawer-content class="mat-drawer-content-content-wrapper">
+  <mat-drawer-content style="background: rgb(248, 246, 246); height:100%">
+    <div class="mat-drawer-content-content-wrapper" style="overflow-x: hidden; height:100%">
       <router-outlet></router-outlet>
+    </div>
   </mat-drawer-content>
 </mat-drawer-container>

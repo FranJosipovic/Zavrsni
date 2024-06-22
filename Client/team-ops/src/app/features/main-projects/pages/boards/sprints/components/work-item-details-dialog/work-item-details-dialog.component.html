@@ -1,0 +1,155 @@
+<div style="overflow-x: hidden; position: relative; height: 100%">
+  <div
+    style="
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 10px;
+      align-items: center;
+    "
+  >
+    <p>
+      {{ workItemsType[data.workItem.type].toString() }}
+      <b>
+        {{ data.workItem.id | truncate : 5 : false : "" }}
+      </b>
+    </p>
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <p style="padding: 0 10px; display: flex; align-items: center">
+    <b style="margin-right: 10px">
+      {{ data.workItem.id | truncate : 5 : false : "" }}
+    </b>
+    <input
+      style="
+        padding: 3px;
+        width: 100%;
+        border: 0.5px solid black;
+        border-radius: 4px;
+        flex-grow: 1;
+      "
+      type="text"
+      [formControl]="title"
+    />
+  </p>
+  <div
+    style="
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px;
+    "
+  >
+    <p>Created By:</p>
+    <div
+      style="
+        height: 20px;
+        width: 20px;
+        font-size: 10px;
+        color: white;
+        border-radius: 50%;
+        background: red;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+      "
+    >
+      {{ createdByInitials }}
+    </div>
+    <p style="margin-left: 5px">{{ data.workItem.createdBy.name }}</p>
+  </div>
+  <div
+    style="
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px;
+    "
+  >
+    <p>Assigned To:</p>
+    <div
+      style="
+        height: 20px;
+        width: 20px;
+        font-size: 10px;
+        color: white;
+        border-radius: 50%;
+        background: red;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+      "
+    >
+      {{ assignedToInitials }}
+    </div>
+    <p style="margin-left: 5px">{{ data.workItem.assignedTo.name }}</p>
+  </div>
+  <div style="width: 100%; background: rgb(242, 241, 241); padding: 10px">
+    <div style="display: flex; flex-direction: row; align-items: center">
+      <p>Status:</p>
+      <div
+        style="height: 10px; width: 10px; border-radius: 50%; margin-left: 10px"
+        [ngStyle]="{ background: statusColor }"
+      ></div>
+      <p style="margin-left: 5px">
+        {{ workItemsStatus[data.workItem.status].toString() }}
+      </p>
+    </div>
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 10px;
+      "
+    >
+      <p>Priority:</p>
+      <div
+        style="height: 10px; width: 10px; border-radius: 50%; margin-left: 10px"
+        [ngStyle]="{ background: priorityColor }"
+      ></div>
+      <p style="margin-left: 5px">
+        {{ workItemsPriority[data.workItem.priority].toString() }}
+      </p>
+    </div>
+  </div>
+  <div style="padding: 10px">
+    <p><b>Description:</b></p>
+    <textarea
+      style="
+        min-height: 100px;
+        max-height: 100px;
+        min-width: calc(100% - 10px);
+        max-width: calc(100% - 10px);
+        border: 0.5px solid black;
+        border-radius: 4px;
+        padding: 5px;
+      "
+      name="description"
+      id="description"
+      [placeholder]="
+        description.value?.length == 0 ? 'Enter description here' : ''
+      "
+      [formControl]="description"
+    ></textarea>
+  </div>
+  <div style="padding: 10px; position: absolute; bottom: 10px; width: calc(100% - 20px)">
+    <button
+      style="
+        width: 100%;
+        padding: 10px;
+        background: rgb(26, 26, 205);
+        color: white;
+      "
+      (click)="saveChanges()"
+      [ngStyle]="{'background': inputChanged ? 'rgb(26, 26, 205)' : 'rgb(169, 169, 169)', 'cursor': inputChanged ? 'pointer' : 'not-allowed'}"
+      [disabled]="!inputChanged"
+    >
+      Save Changes
+    </button>
+  </div>
+</div>

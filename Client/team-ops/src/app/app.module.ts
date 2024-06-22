@@ -25,14 +25,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { OrganizationsComponent } from './features/main/pages/organizations/organizations.component';
 import { OrganizationSettingsComponent } from './features/main/pages/organization-settings/organization-settings.component';
-import {MatTableModule} from '@angular/material/table';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProjectComponent } from './features/main-projects/pages/project/project.component';
 import { SummaryComponent } from './features/main-projects/pages/overview/summary/summary.component';
-import { CreateUpdateWikiComponent } from './features/main-projects/pages/overview/wiki/create-update-wiki/create-update-wiki.component';
-
-
-
+import { CreateOrganizationDialogComponent } from './features/main/pages/organizations/dialogs/create-organization-dialog/create-organization-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { CreateProjectDialogComponent } from './features/main/pages/organizations/dialogs/create-project-dialog/create-project-dialog.component';
+import { TruncatePipe } from './core/pipes/truncate.pipe';
+import { InitialsPipe } from './core/pipes/initials.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,6 +45,8 @@ import { CreateUpdateWikiComponent } from './features/main-projects/pages/overvi
     OrganizationSettingsComponent,
     ProjectComponent,
     SummaryComponent,
+    CreateOrganizationDialogComponent,
+    CreateProjectDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -61,7 +65,11 @@ import { CreateUpdateWikiComponent } from './features/main-projects/pages/overvi
     MatIconModule,
     MatTabsModule,
     MatTableModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule,
+    MatButtonModule,
+    TruncatePipe,
+    InitialsPipe
   ],
   providers: [provideClientHydration(), provideAnimationsAsync()],
   bootstrap: [AppComponent],

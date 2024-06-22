@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zavrsni.TeamOps.Entity;
-using Zavrsni.TeamOps.Features.Users.Models;
+using Zavrsni.TeamOps.Features.Users.Models.DTOs;
 using Zavrsni.TeamOps.Features.Users.Utils;
 using Zavrsni.TeamOps.JWT;
 

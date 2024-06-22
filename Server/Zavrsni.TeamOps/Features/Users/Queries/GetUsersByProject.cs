@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zavrsni.TeamOps.Common;
 using Zavrsni.TeamOps.Entity;
-using Zavrsni.TeamOps.Features.Users.Models;
+using Zavrsni.TeamOps.Features.Users.Models.DTOs;
 
 namespace Zavrsni.TeamOps.Features.Users.Queries
 {

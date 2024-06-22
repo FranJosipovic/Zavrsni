@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
-using Zavrsni.TeamOps.Common.Connectors;
 using Zavrsni.TeamOps.Entity;
 using Zavrsni.TeamOps.Entity.Models;
-using Zavrsni.TeamOps.Features.Users.Models;
+using Zavrsni.TeamOps.Features.Users.Models.DTOs;
 using Zavrsni.TeamOps.Features.Users.Utils;
 using Zavrsni.TeamOps.Features.Users.Validators;
 
@@ -19,7 +18,6 @@ namespace Zavrsni.TeamOps.Features.Users.Commands
             public string Email { get; set; } = string.Empty;
             public string Password { get; set; } = string.Empty;
             public int InviteeId {  get; set; }
-            public string GitHubUser { get; set; }
         }
 
         //public class Validator : AbstractValidator<Command>
@@ -37,14 +35,12 @@ namespace Zavrsni.TeamOps.Features.Users.Commands
             //private readonly IValidator<Command> _validator;
             private readonly IUserValidator _userValidator;
             private readonly IMapper _mapper;
-            private readonly IGithubConnector _githubConnector;
-            public Handler(TeamOpsDbContext dbContext, /*IValidator<Command> validator,*/ IMapper mapper, IGithubConnector githubConnector)
+            public Handler(TeamOpsDbContext dbContext, /*IValidator<Command> validator,*/ IMapper mapper)
             {
                 _dbContext = dbContext;
                 //_validator = validator;
                 _userValidator = new UserValidator(_dbContext);
                 _mapper = mapper;
-                _githubConnector = githubConnector;
             }
 
             public async Task<ServiceActionResult> Handle(Command request, CancellationToken cancellationToken)
@@ -76,18 +72,6 @@ namespace Zavrsni.TeamOps.Features.Users.Commands
                 catch (Exception)
                 {
                     throw;
-                }
-
-                //send inv to organization using GithubAPI
-                try
-                {
-                    var ghresponse = await _githubConnector.SendOrganizationInvitation(new Common.Connectors.RequestModels.GithubOrganizationInvitationRequest { invitee_id = request.InviteeId,role="direct_member"});
-                    ghresponse.EnsureSuccessStatusCode();
-                }
-                catch (Exception)
-                {
-                    serviceActionResult.SetInternalError();
-                    return serviceActionResult;
                 }
 
                 UserNoSensitiveInfoDTO createdUser = _mapper.Map<UserNoSensitiveInfoDTO>(user);

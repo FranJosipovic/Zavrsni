@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Writers;
 using System.Data.Entity.Core;
+using Zavrsni.TeamOps.EF.Models;
 using Zavrsni.TeamOps.Entity;
 using Zavrsni.TeamOps.Entity.Models;
 
@@ -12,6 +14,20 @@ namespace Zavrsni.TeamOps.Features.Projects.Repository
         public ProjectRepository(TeamOpsDbContext db)
         {
             _db = db;
+        }
+
+        public async Task<Project?> GetAsync(Guid projectId)
+        {
+            try
+            {
+                var project = await _db.Projects.FindAsync(projectId);
+                return project;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<Guid?> GetIdByNameAsync(string name, Guid organizationId)
@@ -78,6 +94,41 @@ namespace Zavrsni.TeamOps.Features.Projects.Repository
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public async Task<int> GetIterationsCountByProjectAsync(Guid projectId)
+        {
+            try
+            {
+                return await _db.Iterations.CountAsync(i => i.ProjectId == projectId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<int> GetUsersCountByProjectAsync(Guid projectId)
+        {
+            try
+            {
+                var project = await _db.Projects
+                                       .Include(p => p.Users)
+                                       .FirstOrDefaultAsync(p => p.Id == projectId);
+
+                if (project != null)
+                {
+                    return project.Users.Count;
+                }
+
+                return 0;
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

@@ -34,7 +34,7 @@ const routes: Routes = [
         path: ':organizationName/:projectName',
         loadChildren: () =>
           import('./features/main-projects/main-projects.module').then(
-            (m) => m.MainProjectsModule
+            (m) => m.MainProjectsModule 
           ),
       },
     ],

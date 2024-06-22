@@ -13,7 +13,6 @@ using Zavrsni.TeamOps.Features.Organizations.Validators;
 using Zavrsni.TeamOps.Features.Projects.Repository;
 using Zavrsni.TeamOps.Features.Projects.Services;
 using Zavrsni.TeamOps.Features.Users.Repository;
-//using Zavrsni.TeamOps.Features.Users.Service;
 using Zavrsni.TeamOps.Features.Users.Validators;
 using Zavrsni.TeamOps.Filters;
 

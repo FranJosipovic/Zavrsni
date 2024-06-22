@@ -1,0 +1,109 @@
+<form>
+  <div>
+    <label for="type">Work item type:</label>
+    <select
+      name="type"
+      id="type"
+      style="border: 0.5px solid black; border-radius: 4px; margin-left: 5px"
+      (change)="onWorkItemTypeChange($event)"
+      [formControl]="workItemType"
+    >
+      <option [value]="workItemTypes.User_Story">User Story</option>
+      <option [value]="workItemTypes.Task">Task</option>
+      <option [value]="workItemTypes.Bug_Fix">Bug Fix</option>
+    </select>
+  </div>
+
+  <div *ngIf="!userStorySelected" style="margin-top: 10px">
+    <label for="parentWorkItem">Select parent:</label>
+    <select
+      name="parentWorkItem"
+      id="parentWorkItem"
+      style="border: 0.5px solid black; border-radius: 4px; margin-left: 5px"
+      [formControl]="parentId"
+    >
+      @for (item of parentWorkItems; track $index) {
+      <option [value]="item.id">{{ item.title }}</option>
+      }
+    </select>
+  </div>
+
+  <input
+    class="title"
+    type="text"
+    placeholder="Enter title"
+    style="margin-top: 10px"
+    [formControl]="title"
+  />
+
+  <div style="display: flex; flex-direction: column; margin-top: 10px">
+    <label for="description">Description:</label>
+    <textarea
+      name="description"
+      id="description"
+      placeholder="Description..."
+      [formControl]="description"
+    ></textarea>
+  </div>
+
+  <div style="margin-top: 10px">
+    <label for="iteration">Iteration:</label>
+    <select
+      name="iteration"
+      id="iteration"
+      style="border: 0.5px solid black; border-radius: 4px; margin-left: 5px"
+      [formControl]="iterationId"
+      (change)="onIterationChange($event)"
+    >
+      @for (iteration of iterations; track $index) {
+      <option [value]="iteration.id" [disabled]="!userStorySelected">{{ iteration.number }}</option>
+      }
+    </select>
+  </div>
+
+  <div style="margin-top: 10px">
+    <label for="assignTo">Assign To</label>
+    <select
+      name="assignTo"
+      id="assignTo"
+      style="border: 0.5px solid black; border-radius: 4px; margin-left: 5px"
+      [formControl]="assignTo"
+    >
+      <option [value]="null">UNASSIGNED</option>
+      @for (projectUser of projectUsers; track $index) {
+      <option [value]="projectUser.id">
+        {{ projectUser.name }} {{ projectUser.surname }}
+      </option>
+      }
+    </select>
+  </div>
+
+  <div style="margin-top: 10px">
+    <label for="priority">Priority:</label>
+    <select
+      name="priority"
+      id="priority"
+      style="border: 0.5px solid black; border-radius: 4px; margin-left: 5px"
+      [formControl]="priority"
+    >
+      <option [value]="workItemsPriorities.LOW">LOW</option>
+      <option [value]="workItemsPriorities.MEDIUM">MEDIUM</option>
+      <option [value]="workItemsPriorities.HIGH">HIGH</option>
+    </select>
+  </div>
+
+  <button
+    style="
+      margin-top: 120px;
+      width: 100%;
+      height: 50px;
+      background-color: rgb(94, 94, 235);
+      padding: 5px;
+      align-self: flex-end;
+      color: white;
+    "
+    (click)="onSubmit($event)"
+  >
+    Submit
+  </button>
+</form>

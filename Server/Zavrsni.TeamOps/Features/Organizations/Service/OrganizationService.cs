@@ -4,7 +4,7 @@ using Zavrsni.TeamOps.Entity.Models;
 using Zavrsni.TeamOps.Features.Organizations.Models;
 using Zavrsni.TeamOps.Features.Organizations.Repository;
 using Zavrsni.TeamOps.Features.Organizations.Validators;
-using Zavrsni.TeamOps.Features.Users.Models;
+using Zavrsni.TeamOps.Features.Users.Models.DTOs;
 using Zavrsni.TeamOps.Features.Users.Repository;
 
 namespace Zavrsni.TeamOps.Features.Organizations.Service

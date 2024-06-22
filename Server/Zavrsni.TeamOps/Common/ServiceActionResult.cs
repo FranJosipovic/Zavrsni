@@ -76,6 +76,11 @@ namespace Zavrsni.TeamOps
             this.Data = data;
         }
 
+        public object? GetData()
+        {
+            return this.Data;
+        } 
+
         public IActionResult GetResponseResult() => new ObjectResult(this.Value)
         {
             StatusCode = this.StatusCode,

@@ -9,5 +9,6 @@ namespace Zavrsni.TeamOps.Features.Projects.Services
         Task<ServiceActionResult> GetByOrganizationId(Guid organizationId);
         Task<ServiceActionResult> CreateNewProject(CreateProjectModel projectModel);
         Task<ServiceActionResult> AddUserToProject(AddUserToProjectModel model);
+        Task<ServiceActionResult> GetProjectDetails(Guid projectId);
     }
 }

@@ -112,30 +112,6 @@
         *Passwords do not match
       </div>
     </div>
-    <div class="form-search">
-      <label for="gitHubUser">Connect github account</label>
-      <input
-        type="text"
-        name="gitHubUser"
-        id="gitHubUser"
-        formControlName="gitHubUser"
-        placeholder="Enter github username..."
-        (input)="onSearch(getValueFromInput($event.target!))"
-      />
-      <ul>
-        @for (userAcc of searchedUsers; track $index) {
-        <li style="display: flex; flex-direction: row;align-items:center;gap:20px" (click)="onSearchItemClick(userAcc)">
-          <img
-            src="{{ userAcc.avatarUrl }}"
-            height="30px"
-            width="30px"
-            style="border-radius: 50%"
-          />
-          {{ userAcc.username }}
-        </li>
-        }
-      </ul>
-    </div>
 
     <button type="submit">Submit</button>
     <a href="/login"><p class="sign-in">Sign In</p></a>

@@ -68,5 +68,13 @@ namespace Zavrsni.TeamOps.Features.Users
             var result = await _sernder.Send(querry);
             return result.GetResponseResult();
         }
+
+        [HttpGet("user/{q}")]
+        public async Task<IActionResult> SearchUsers([FromRoute] string q)
+        {
+            var querry = new SearchUsers.Querry { q = q };
+            var result = await _sernder.Send(querry);
+            return result.GetResponseResult();
+        }
     }
 }

@@ -48,13 +48,15 @@ export class WikiService {
 
   updateWiki(
     wikiId: string,
-    content: string
+    content: string,
+    title: string
   ): Observable<HttpResponseModel<ProjectWikiData>> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    console.log(title)
     return this.httpClient
       .put(
         `https://localhost:7048/api/ProjectWikis/wikis/${wikiId}`,
-        { content },
+        { Content: content, Title: title },
         {
           headers,
         }
@@ -71,6 +73,21 @@ export class WikiService {
           });
         })
       );
+  }
+
+  deleteWiki(wikiId:string):Observable<HttpResponseModel<null>>{
+    return this.httpClient.delete(`https://localhost:7048/api/ProjectWikis/${wikiId}`).pipe(
+      map((response:any)=>response),
+      catchError((error) => {
+        console.log(error);
+        return of({
+          statusCode: error.error.statusCode ?? 500,
+          isSuccess: error.error.isSuccess ?? false,
+          data: error.error.data ?? null,
+          message: error.error.message ?? 'internal server error',
+        });
+      })
+    )
   }
 
   createWiki(
@@ -118,4 +135,5 @@ export interface ProjectWikiData {
   createdOn: string;
   content: string;
   createdBy: string;
+  parentId: string;
 }

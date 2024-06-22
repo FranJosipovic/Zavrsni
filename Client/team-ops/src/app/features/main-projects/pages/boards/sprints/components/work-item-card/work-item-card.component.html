@@ -1,0 +1,110 @@
+<div
+  class="mat-elevation-z2"
+  style="width: 160px; padding: 10px; background: white; position: relative"
+>
+  <button
+    *ngIf="workItem.type != workItemsType.User_Story"
+    [mat-menu-trigger-for]="menu"
+    style="position: absolute; top: 5px; right: 5px"
+  >
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="onDelete()">Delete</button>
+  </mat-menu>
+  <div
+    class="underline"
+    style="display: flex; flex-direction: row; gap: 10px"
+    (click)="openDetails()"
+  >
+    <p>
+      <b>
+        {{ workItem.id | truncate : 5 : false : "" }}
+      </b>
+    </p>
+    <p>{{ workItem.title | truncate : 10 }}</p>
+  </div>
+
+  <div
+    style="
+      margin-top: 10px;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+    "
+  >
+    <div
+      style="height: 10px; width: 10px; border-radius: 50%"
+      [ngStyle]="{ background: statusColor }"
+    ></div>
+    <p>{{ statusString }}</p>
+  </div>
+  <div
+    style="
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    "
+  >
+    <div
+      style="
+        height: 20px;
+        width: 20px;
+        font-size: 10px;
+        color: white;
+        border-radius: 50%;
+        background: red;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      {{ assignedToInitials }}
+    </div>
+    <p>{{ workItem.assignedTo.name }}</p>
+    <button
+      *ngIf="workItem.type != workItemsType.User_Story"
+      [matMenuTriggerFor]="assignedToMenu"
+    >
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+  </div>
+  <mat-menu #assignedToMenu="matMenu" xPosition="before">
+    @for (user of projectUsers; track $index) {
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        margin-top: 10px;
+        padding: 5px;
+        cursor: pointer;
+      "
+      onmouseover="this.style.background='rgb(220, 220, 220)';"
+      onmouseout="this.style.background=''"
+      (click)="onAssignedToUpdate(user)"
+    >
+      <div
+        style="
+          height: 20px;
+          width: 20px;
+          font-size: 10px;
+          color: white;
+          border-radius: 50%;
+          background: red;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        {{ user.name + " " + user.surname | initials }}
+      </div>
+      <p>{{ user.name + " " + user.surname }}</p>
+    </div>
+    }
+  </mat-menu>
+</div>

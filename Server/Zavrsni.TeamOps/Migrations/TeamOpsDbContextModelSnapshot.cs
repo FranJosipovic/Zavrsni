@@ -52,6 +52,119 @@ namespace Zavrsni.TeamOps.Migrations
                     b.ToTable("ProjectUser");
                 });
 
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.Iteration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndsAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderNumber")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartsAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Iterations");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.ProjectWiki", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectWikis");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.WorkItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AssignedToId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("IterationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("IterationId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("WorkItems");
+                });
+
             modelBuilder.Entity("Zavrsni.TeamOps.Entity.Models.Organization", b =>
                 {
                     b.Property<Guid>("Id")
@@ -125,9 +238,6 @@ namespace Zavrsni.TeamOps.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GitHubUser")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -182,6 +292,73 @@ namespace Zavrsni.TeamOps.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.Iteration", b =>
+                {
+                    b.HasOne("Zavrsni.TeamOps.Entity.Models.Project", "Project")
+                        .WithMany("Iterrations")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.ProjectWiki", b =>
+                {
+                    b.HasOne("Zavrsni.TeamOps.Entity.Models.User", "CreatedBy")
+                        .WithMany("ProjectWikis")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Zavrsni.TeamOps.EF.Models.ProjectWiki", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("Zavrsni.TeamOps.Entity.Models.Project", "Project")
+                        .WithMany("ProjectWikis")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.WorkItem", b =>
+                {
+                    b.HasOne("Zavrsni.TeamOps.Entity.Models.User", "AssignedTo")
+                        .WithMany("WorkItemsAssignedToMe")
+                        .HasForeignKey("AssignedToId");
+
+                    b.HasOne("Zavrsni.TeamOps.Entity.Models.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Zavrsni.TeamOps.EF.Models.Iteration", "Iteration")
+                        .WithMany("WorkItems")
+                        .HasForeignKey("IterationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Zavrsni.TeamOps.EF.Models.WorkItem", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("AssignedTo");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Iteration");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("Zavrsni.TeamOps.Entity.Models.Organization", b =>
                 {
                     b.HasOne("Zavrsni.TeamOps.Entity.Models.User", "Owner")
@@ -202,9 +379,38 @@ namespace Zavrsni.TeamOps.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.Iteration", b =>
+                {
+                    b.Navigation("WorkItems");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.ProjectWiki", b =>
+                {
+                    b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.EF.Models.WorkItem", b =>
+                {
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("Zavrsni.TeamOps.Entity.Models.Organization", b =>
                 {
                     b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.Entity.Models.Project", b =>
+                {
+                    b.Navigation("Iterrations");
+
+                    b.Navigation("ProjectWikis");
+                });
+
+            modelBuilder.Entity("Zavrsni.TeamOps.Entity.Models.User", b =>
+                {
+                    b.Navigation("ProjectWikis");
+
+                    b.Navigation("WorkItemsAssignedToMe");
                 });
 #pragma warning restore 612, 618
         }

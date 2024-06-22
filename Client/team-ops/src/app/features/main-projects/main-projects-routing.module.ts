@@ -6,8 +6,6 @@ import { SummaryComponent } from './pages/overview/summary/summary.component';
 import { WikiComponent } from './pages/overview/wiki/wiki.component';
 import { WorkItemsComponent } from './pages/boards/work-items/work-items.component';
 import { SprintsComponent } from './pages/boards/sprints/sprints.component';
-import { CommitsComponent } from './pages/repos/commits/commits.component';
-import { FilesComponent } from './pages/repos/files/files.component';
 
 const routes: Routes = [
   {
@@ -26,12 +24,7 @@ const routes: Routes = [
         path: 'boards/work-items',
         component: WorkItemsComponent,
       },
-      { path: 'boards/sprints', component: SprintsComponent },
-      {
-        path: 'repos/commits',
-        component: CommitsComponent,
-      },
-      { path: 'repos/files', component: FilesComponent },
+      { path: 'boards/sprints', component: SprintsComponent }
     ],
   },
 ];

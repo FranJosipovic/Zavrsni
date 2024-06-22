@@ -27,35 +27,10 @@ export class ProjectComponent implements OnInit {
     this.route.data.subscribe((data) => {
       console.log(data);
       localStorage.setItem('projectId', data['ids'].projectId);
+      localStorage.setItem('organizationId', data['ids'].organizationId);
     });
     let route = this.buildRoute();
     this.router.navigateByUrl(route);
-    // this.setDynamicMaxHeight()
-  }
-
-  setDynamicMaxHeight() {
-    const windowHeight = window.innerHeight;
-    const drawerContainer =
-      this.el.nativeElement.querySelector('.content-container');
-    const drawerContent = this.el.nativeElement.querySelector(
-      '.mat-drawer-content-content-wrapper'
-    );
-
-    const containerHeight = drawerContainer.offsetHeight;
-    const headerFooterHeight = containerHeight - drawerContent.offsetHeight;
-
-    // Calculate dynamic max height
-    let headerHeight = 64;
-    let padding = 50;
-    const dynamicMaxHeight =
-      windowHeight - headerFooterHeight - headerHeight - padding;
-
-    // Set dynamic max height to .mat-drawer-content-content-wrapper
-    this.renderer.setStyle(
-      drawerContent,
-      'max-height',
-      dynamicMaxHeight + 'px'
-    );
   }
 
   public menu = [
@@ -76,16 +51,7 @@ export class ProjectComponent implements OnInit {
         { title: 'Work Items', isSelected: false, route: 'work-items' },
         { title: 'Sprints', isSelected: false, route: 'sprints' },
       ],
-    },
-    {
-      title: 'Repos',
-      isSelected: false,
-      route: 'repos',
-      children: [
-        { title: 'Files', isSelected: false, route: 'files' },
-        { title: 'Commits', isSelected: false, route: 'commits' },
-      ],
-    },
+    }
   ];
 
   onSelectParentItemMenu(parentTitle: string) {

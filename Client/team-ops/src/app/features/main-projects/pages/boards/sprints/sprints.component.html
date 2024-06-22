@@ -1,1 +1,311 @@
-<p>sprints works!</p>
+<div
+  style="
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+  "
+>
+  <div style="width: 98%; height: 100%; overflow-y: auto">
+    <p style="margin: 10px 0">Work Items</p>
+    <div style="display: flex; flex-direction: row; gap: 10px">
+      <select
+        name="iteration"
+        id="iteration"
+        style="padding: 5px 10px; background: lightgray; margin-top: 10px"
+        (change)="onIterationChange($event)"
+      >
+        @for (iteration of iterations; track $index) {
+        <option [value]="iteration.id">Sprint {{ iteration.number }}</option>
+        }
+      </select>
+      <button
+        style="
+          width: 27px;
+          margin-top: 10px;
+          background: lightgray;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+        (click)="createNewIteration()"
+      >
+        +
+      </button>
+    </div>
+
+    <div
+      style="
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: 16% 28% 28% 28%;
+        width: 98%;
+        overflow-x: hidden;
+        margin-top: 10px;
+        background: white;
+      "
+    >
+      <div>User Story</div>
+      <div>New</div>
+      <div>Active</div>
+      <div>Closed</div>
+    </div>
+
+    <div
+      style="
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: 16% 28% 28% 28%;
+        width: 98%;
+        max-height: 65%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        margin-top: 10px;
+      "
+    >
+      @for (userStory of userStories; track $index) {
+      <div>
+        <app-work-item-card
+          [workItem]="userStory"
+          style="margin-top: 5px"
+          (onDeleteClicked)="handleDeleteEvent($event)"
+          (workItemUpdated)="onWorkItemUpdate()"
+          [projectUsers]="projectUsers"
+        ></app-work-item-card>
+      </div>
+      <!-- New -->
+      <div
+        style="
+          background-color: white;
+          padding: 10px 10px 0 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        "
+        (dragover)="allowDrop($event, userStory.id)"
+        (dragleave)="removeBgClass($event)"
+        (drop)="drop($event, workItemsStatus.New, userStory.id)"
+      >
+        @for (workItem of userStory.children; track $index) {
+        <app-work-item-card
+          *ngIf="workItem.status == workItemsStatus.New"
+          [workItem]="workItem"
+          (onDeleteClicked)="handleDeleteEvent($event)"
+          draggable="true"
+          (dragstart)="drag($event, workItem)"
+          (workItemUpdated)="onWorkItemUpdate()"
+          [projectUsers]="projectUsers"
+          (workItemAssignedToUpdate)="handleUpdateAssignedToEvent($event)"
+        ></app-work-item-card>
+        }
+        <div style="height: 5px"></div>
+        <!-- create card -->
+
+        <div
+          class="mat-elevation-z2"
+          style="width: 180px; padding: 10px; background: white"
+          *ngIf="
+            selectedUserStoryCreateOptions == userStory.id &&
+            (newTaskSelected || newBugFixSelected)
+          "
+        >
+          <input
+            type="text"
+            placeholder="title"
+            style="
+              width: 80%;
+              height: 30px;
+              border: 0.5px solid black;
+              border-radius: 4px;
+              padding-left: 5px;
+            "
+            [formControl]="title"
+          />
+          <div
+            style="
+              margin-top: 10px;
+              display: flex;
+              flex-direction: row;
+              gap: 10px;
+              align-items: center;
+            "
+          >
+            <div
+              style="
+                height: 10px;
+                width: 10px;
+                border-radius: 50%;
+                background: lightgray;
+              "
+            ></div>
+            <p>New</p>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: row;
+              gap: 10px;
+              align-items: center;
+              margin-top: 10px;
+            "
+          >
+            <div
+              style="
+                height: 20px;
+                width: 20px;
+                font-size: 10px;
+                color: white;
+                border-radius: 50%;
+                background: red;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              {{ assignedToInitials }}
+            </div>
+            <select [formControl]="assignedToId">
+              <option [value]="null">UNASSIGNED</option>
+              @for (user of projectUsers; track $index) {
+              <option [value]="user.id">
+                {{ user.name }} {{ user.surname }}
+              </option>
+              }
+            </select>
+          </div>
+          <button
+            style="
+              width: 100%;
+              height: 30px;
+              background: lightblue;
+              color: white;
+              padding: 4px;
+              margin-top: 5px;
+              cursor: pointer;
+            "
+            onmouseover="this.style.background='blue';"
+            onmouseout="this.style.background='lightblue';"
+            (click)="onCreateNewWorkItem(userStory.id)"
+          >
+            Submit
+          </button>
+        </div>
+        <div
+          style="height: 10px"
+          *ngIf="
+            selectedUserStoryCreateOptions == userStory.id &&
+            (newTaskSelected || newBugFixSelected)
+          "
+        ></div>
+        <div
+          style="
+            height: 30px;
+            width: 30px;
+            background: lightgray;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            position: relative;
+          "
+          (click)="toggleCreateOptions(userStory.id)"
+        >
+          <mat-icon fontIcon="keyboard_arrow_down"></mat-icon>
+          <div
+            *ngIf="
+              selectedUserStoryCreateOptions == userStory.id &&
+              showCreateOptions
+            "
+            style="position: absolute; bottom: -40px; left: 0; z-index: 10"
+          >
+            <div
+              style="
+                height: 20px;
+                width: 60px;
+                text-align: center;
+                background: rgb(246, 245, 245);
+                cursor: pointer;
+              "
+              onmouseover="this.style.background='rgb(220, 220, 220)';"
+              onmouseout="this.style.background='rgb(246, 245, 245)';"
+              (click)="selectNewTask()"
+            >
+              Task
+            </div>
+            <div
+              style="
+                height: 20px;
+                width: 60px;
+                text-align: center;
+                background: rgb(246, 245, 245);
+                cursor: pointer;
+              "
+              onmouseover="this.style.background='rgb(220, 220, 220)';"
+              onmouseout="this.style.background='rgb(246, 245, 245)';"
+              (click)="selectNewBugFix()"
+            >
+              Bug Fix
+            </div>
+          </div>
+        </div>
+
+        <div style="height: 10px"></div>
+      </div>
+      <!-- Active -->
+      <div
+        style="
+          background-color: white;
+          padding: 10px 10px 0 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        "
+        (dragleave)="removeBgClass($event)"
+        (dragover)="allowDrop($event, userStory.id)"
+        (drop)="drop($event, workItemsStatus.Active, userStory.id)"
+      >
+        @for (workItem of userStory.children; track $index) {
+        <app-work-item-card
+          *ngIf="workItem.status == workItemsStatus.Active"
+          [workItem]="workItem"
+          (onDeleteClicked)="handleDeleteEvent($event)"
+          draggable="true"
+          (dragstart)="drag($event, workItem)"
+          (workItemUpdated)="onWorkItemUpdate()"
+          [projectUsers]="projectUsers"
+          (workItemAssignedToUpdate)="handleUpdateAssignedToEvent($event)"
+        ></app-work-item-card>
+        }
+      </div>
+      <!-- CLosed -->
+      <div
+        style="
+          background-color: white;
+          padding: 10px 10px 0 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        "
+        (dragleave)="removeBgClass($event)"
+        (dragover)="allowDrop($event, userStory.id)"
+        (drop)="drop($event, workItemsStatus.Closed, userStory.id)"
+      >
+        @for (workItem of userStory.children; track $index) {
+        <app-work-item-card
+          *ngIf="workItem.status == workItemsStatus.Closed"
+          [workItem]="workItem"
+          (onDeleteClicked)="handleDeleteEvent($event)"
+          draggable="true"
+          (dragstart)="drag($event, workItem)"
+          (workItemUpdated)="onWorkItemUpdate()"
+          [projectUsers]="projectUsers"
+          (workItemAssignedToUpdate)="handleUpdateAssignedToEvent($event)"
+        ></app-work-item-card>
+        }
+      </div>
+      }
+    </div>
+  </div>
+</div>

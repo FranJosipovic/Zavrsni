@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { WikiComponent } from '../wiki.component';
 import { WikiService } from '../services/wiki.service';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -12,24 +11,9 @@ import { FormControl, Validators } from '@angular/forms';
   styleUrl: './create-update-wiki.component.scss',
 })
 export class CreateUpdateWikiComponent implements OnInit {
-  @Input() updateWikiData!: UpdateWikiData | null;
-  @Input() createWikiData!: CreateWikiData | null;
-
+  @Input() data!: CreateOrUpdateWikiData;
+  @Input() shouldCreate!: boolean;
   @Output() finishEditOrCreate = new EventEmitter();
-
-  public title = new FormControl('', Validators.required);
-
-  finishAction() {
-    this.finishEditOrCreate.emit();
-  }
-
-  public Editor = ClassicEditor;
-  private editedContent: string = '';
-  public isEditing!: boolean;
-
-  public onChange({ editor }: ChangeEvent) {
-    this.editedContent = editor.getData();
-  }
 
   constructor(
     private wikiService: WikiService,
@@ -37,18 +21,41 @@ export class CreateUpdateWikiComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isEditing =
-      this.updateWikiData !== null && this.updateWikiData !== undefined;
-    console.log(this.isEditing);
+    this.title.setValue(this.data.title);
   }
 
+  public title = new FormControl('', Validators.required);
+
+  //editor
+  public Editor = ClassicEditor;
+  private editedContent: string = '';
+
+  public onChange({ editor }: ChangeEvent) {
+    this.editedContent = editor.getData();
+  }
+
+  //mange save/close
   close() {
     this.finishAction();
   }
 
-  save() {
+  onFinish() {
+    if (this.shouldCreate) {
+      this.create();
+    } else {
+      this.update();
+    }
+  }
+
+  finishAction() {
+    this.finishEditOrCreate.emit();
+  }
+
+  //update or create calls
+  private update() {
+    console.log(this.title.value);
     this.wikiService
-      .updateWiki(this.updateWikiData?.wikiId!, this.editedContent)
+      .updateWiki(this.data.wikiId!, this.editedContent, this.title.value!)
       .subscribe((data) => {
         if (data.isSuccess) {
           this.toastr.show(
@@ -76,15 +83,14 @@ export class CreateUpdateWikiComponent implements OnInit {
       });
   }
 
-  create() {
-    console.log(this.title)
+  private create() {
     this.wikiService
       .createWiki(
         this.editedContent,
         this.title.value!,
-        this.createWikiData?.projectId!,
-        this.createWikiData?.createdById!,
-        this.createWikiData?.parentId!
+        this.data.projectId,
+        this.data.createdById,
+        this.data.parentId
       )
       .subscribe((data) => {
         if (data.isSuccess) {
@@ -114,15 +120,11 @@ export class CreateUpdateWikiComponent implements OnInit {
   }
 }
 
-export interface UpdateWikiData {
-  wikiId: string;
+export interface CreateOrUpdateWikiData {
+  wikiId: string | null;
   title: string;
   content: string;
-}
-
-export interface CreateWikiData {
-  projectId: string;
   parentId: string | null;
-  content: string;
   createdById: string;
+  projectId: string;
 }

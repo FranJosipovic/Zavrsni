@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Create Organization</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="newOrganizationForm">
+        <div class="form-control">
+          <label for="name">Organization Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            formControlName="name"
+            placeholder="Organization Name..."
+            required
+          />
+        </div>
+    
+        <div class="form-control">
+          <label for="description">Organization Description</label>
+          <textarea
+            type="text"
+            name="description"
+            id="description"
+            formControlName="description"
+            placeholder="description..."
+          ></textarea>
+        </div>
+      </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="{refresh:false}">Cancel</button>
+  <button mat-button (click)="onSubmit()" cdkFocusInitial>Create</button>
+</mat-dialog-actions>

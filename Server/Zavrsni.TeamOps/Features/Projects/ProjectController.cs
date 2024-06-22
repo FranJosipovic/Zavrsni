@@ -18,7 +18,6 @@ namespace Zavrsni.TeamOps.Features.Projects
             _projectService = projectService;
         }
 
-
         [HttpGet("projects/organization/{organizationId}")]
         public async Task<IActionResult> GetByOrganizationAsync([FromRoute] Guid organizationId)
         {
@@ -44,6 +43,13 @@ namespace Zavrsni.TeamOps.Features.Projects
         public async Task<IActionResult> CreateProject([FromBody] CreateProjectModel project)
         {
             var result = await _projectService.CreateNewProject(project);
+            return result.GetResponseResult();
+        }
+
+        [HttpGet("details/{projectId}")]
+        public async Task<IActionResult> GetDetails([FromRoute] Guid projectId)
+        {
+            var result = await _projectService.GetProjectDetails(projectId);
             return result.GetResponseResult();
         }
     }

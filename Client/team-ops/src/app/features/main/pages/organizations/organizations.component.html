@@ -2,126 +2,253 @@
   <mat-spinner></mat-spinner>
 </ng-container>
 <ng-template #elseTemplate>
-  <ng-container *ngIf="!hasConfirmedOrganization; else confirmedORganization">
-    <div class="org-not-confirmed">
-      Please check your mail and confirm organization invitation
-    </div>
-  </ng-container>
-  <ng-template #confirmedORganization>
-    <mat-drawer-container class="content-container">
-      <mat-drawer mode="side" opened style="width: 260px">
-        <div class="mat-drawer-content-wrapper">
-          <div>
-            <div style="padding: 10px">My Organizations</div>
-            @for (organization of myOrganizations; track $index) {
+  <mat-drawer-container class="content-container">
+    <mat-drawer mode="side" opened style="width: 260px">
+      <div class="mat-drawer-content-wrapper">
+        <div>
+          <div style="padding: 10px">My Organizations</div>
+          @for (organization of myOrganizations; track $index) {
+          <div
+            style="position: relative"
+            class="organization-card"
+            (click)="onOrganizationSelect(organization.id)"
+            [class]="
+              organization.id == selectedOrganization?.id ? 'selected' : ''
+            "
+          >
             <div
-              style="position: relative"
-              class="organization-card"
-              (click)="onOrganizationSelect(organization.id)"
-              [class]="
-                organization.id == selectedOrganization?.id ? 'selected' : ''
-              "
-            >
-              <div
-                *ngIf="organization.id == selectedOrganization?.id"
-                class="selected-indicator"
-              ></div>
-              <div class="organization-icon">
-                {{ organization.name | firstLetter }}
-              </div>
-              <p>{{ organization.name }}</p>
+              *ngIf="organization.id == selectedOrganization?.id"
+              class="selected-indicator"
+            ></div>
+            <div class="organization-icon">
+              {{ organization.name | firstLetter }}
             </div>
-            }
-            <div style="padding: 20px"><a href="#">New organization</a></div>
-            <div style="padding: 10px">Participating organizations</div>
-            @for (organization of participatingOrganizations; track $index) {
+            <p>{{ organization.name }}</p>
+          </div>
+          }
+          <div
+            style="padding: 20px; color: rgb(82, 82, 236); cursor: pointer"
+            (click)="openCreateOrganizationDialog()"
+          >
+            New organization
+          </div>
+          <div style="padding: 10px">Participating organizations</div>
+          @for (organization of participatingOrganizations; track $index) {
+          <div
+            style="position: relative"
+            class="organization-card"
+            (click)="onOrganizationSelect(organization.id)"
+            [class]="
+              organization.id == selectedOrganization?.id ? 'selected' : ''
+            "
+          >
             <div
-              style="position: relative"
-              class="organization-card"
-              (click)="onOrganizationSelect(organization.id)"
-              [class]="
-                organization.id == selectedOrganization?.id ? 'selected' : ''
-              "
-            >
-              <div
-                *ngIf="organization.id == selectedOrganization?.id"
-                class="selected-indicator"
-              ></div>
-              <div class="organization-icon">
-                {{ organization.name | firstLetter }}
-              </div>
-              <p>{{ organization.name }}</p>
+              *ngIf="organization.id == selectedOrganization?.id"
+              class="selected-indicator"
+            ></div>
+            <div class="organization-icon">
+              {{ organization.name | firstLetter }}
             </div>
-            }
+            <p>{{ organization.name }}</p>
           </div>
-          <div class="organization-settings" (click)="onSettingsClick()">
-            <mat-icon>settings</mat-icon>
-            <p>Organization settings</p>
-          </div>
+          }
         </div>
-      </mat-drawer>
-      <mat-drawer-content style="padding: 25px; background: rgb(248, 246, 246)">
         <div
-          class="mat-drawer-content-content-wrapper"
-          style="overflow-x: hidden"
+          class="organization-settings"
+          style="padding: 10px; margin-top: 10px"
+          (click)="onSettingsClick()"
+        >
+          <mat-icon>settings</mat-icon>
+          <p>Organization settings</p>
+        </div>
+      </div>
+    </mat-drawer>
+    <mat-drawer-content style="padding: 25px; background: rgb(248, 246, 246)">
+      <div
+        class="mat-drawer-content-content-wrapper"
+        style="overflow-x: hidden"
+      >
+        <div
+          style="
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          "
         >
           <h4>{{ selectedOrganization?.name }}</h4>
-          <mat-tab-group
-            mat-stretch-tabs="false"
-            mat-align-tabs="start"
-            style="margin-top: 15px"
+          <span
+            style="
+              color: rgb(73, 73, 245);
+              cursor: pointer;
+              text-decoration: underline;
+            "
+            (click)="openCreateProjectDialog()"
+            *ngIf="selectedOrganization?.ownerId === userState.id"
+            >Create Project</span
           >
-            <mat-tab label="Projects" style="padding: 15px">
-              @if (projects.length == 0) {
-              <div>
-                No Projects...<br /><a
-                  href="#"
-                  *ngIf="selectedOrganization?.ownerId === userState.id"
-                  >Create Project</a
-                >
+        </div>
+        <mat-tab-group
+          mat-stretch-tabs="false"
+          mat-align-tabs="start"
+          style="margin-top: 15px"
+        >
+          <mat-tab label="Projects" style="padding: 15px">
+            @if (projects.length == 0) {
+            <div>
+              No Projects...<br /><span
+                style="
+                  color: rgb(73, 73, 245);
+                  cursor: pointer;
+                  text-decoration: underline;
+                "
+                (click)="openCreateProjectDialog()"
+                *ngIf="selectedOrganization?.ownerId === userState.id"
+                >Create Project</span
+              >
+            </div>
+            }
+            <div class="card-container" style="margin-left: 15px">
+              @for (project of projects; track project) {
+              <div
+                class="card mat-elevation-z8"
+                (click)="onProjectNavigate(project.name)"
+              >
+                <div class="icon-wrapper">
+                  <div class="project-icon">
+                    {{ project.name | firstLetter }}
+                  </div>
+                </div>
+                <div class="info-wrapper">
+                  <h4>{{ project.name }}</h4>
+                  <p>{{ project.description }}</p>
+                </div>
               </div>
               }
-              <div class="card-container" style="margin-left: 15px">
-                @for (project of projects; track project) {
-                <div
-                  class="card mat-elevation-z8"
-                  (click)="onProjectNavigate(project.name)"
-                >
-                  <div class="icon-wrapper">
-                    <div class="project-icon">
-                      {{ project.name | firstLetter }}
-                    </div>
-                  </div>
-                  <div class="info-wrapper">
-                    <h4>{{ project.name }}</h4>
-                    <p>{{ project.description }}</p>
+            </div>
+            <div class="card-list-container">
+              @for (project of projects; track project) {
+              <div
+                class="card-list-item mat-elevation-z8"
+                (click)="onProjectNavigate(project.name)"
+              >
+                <div class="icon-wrapper">
+                  <div class="project-icon">
+                    {{ project.name | firstLetter }}
                   </div>
                 </div>
-                }
+                <div class="info-wrapper">
+                  <h4>{{ project.name }}</h4>
+                  <p>{{ project.description }}</p>
+                </div>
               </div>
-              <div class="card-list-container">
-                @for (project of projects; track project) {
+              }
+            </div>
+          </mat-tab>
+          <mat-tab
+            *ngIf="selectedOrganization?.owner?.id == userState.id"
+            label="Manage Users"
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <h2>Users</h2>
+              <div style="width: 40%; position: relative">
+                <input
+                  style="
+                    width: calc(100% - 15px);
+                    padding: 5px;
+                    border: 0.5px solid black;
+                    border-radius: 4px;
+                    height: 30px;
+                  "
+                  type="text"
+                  placeholder="Search users..."
+                  [formControl]="usersQuery"
+                />
                 <div
-                  class="card-list-item mat-elevation-z8"
-                  (click)="onProjectNavigate(project.name)"
+                  style="
+                    width: 100%;
+                    position: absolute;
+                    max-height: 150px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                  "
+                  class="mat-elevation-z8"
                 >
-                  <div class="icon-wrapper">
-                    <div class="project-icon">
-                      {{ project.name | firstLetter }}
+                  <div
+                    style="
+                      width: 100%;
+                      display: flex;
+                      flex-direction: row;
+                      background: rgb(255, 251, 251);
+                      padding: 5px;
+                      align-items: center;
+                    "
+                    *ngFor="let user of searchedUsers"
+                  >
+                    <div style="flex: 5; display: flex; align-items: center">
+                      {{ user.email }}
+                    </div>
+                    <div
+                      style="
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      "
+                    >
+                      <button mat-button (click)="addUserToOrganization(user)">
+                        <mat-icon>add</mat-icon>
+                      </button>
                     </div>
                   </div>
-                  <div class="info-wrapper">
-                    <h4>{{ project.name }}</h4>
-                    <p>{{ project.description }}</p>
-                  </div>
                 </div>
-                }
               </div>
-            </mat-tab>
-            <mat-tab label="My Work Items">Nije jos implementirano</mat-tab>
-          </mat-tab-group>
-        </div>
-      </mat-drawer-content>
-    </mat-drawer-container>
-  </ng-template>
+            </div>
+            <table
+              style="margin-top: 10px"
+              mat-table
+              [dataSource]="organizationUsers"
+              class="mat-elevation-z8"
+            >
+              <ng-container matColumnDef="Name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.name }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="Surname">
+                <th mat-header-cell *matHeaderCellDef>Surname</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.surname }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="Username">
+                <th mat-header-cell *matHeaderCellDef>Username</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.username }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="Email">
+                <th mat-header-cell *matHeaderCellDef>Email</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.email }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedUsersColumns"></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedUsersColumns"
+              ></tr>
+            </table>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
 </ng-template>

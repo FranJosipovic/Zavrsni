@@ -1,47 +1,10 @@
-<ng-container *ngIf="isEditing; else createing">
-  <div
+<div
     style="
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-    "
-  >
-    <h1 class="wiki-title">{{ updateWikiData!.title }}</h1>
-    <div>
-      <button
-        style="
-          padding: 10px;
-          background: rgb(185, 183, 183);
-          margin-right: 10px;
-        "
-        (click)="close()"
-      >
-        Close
-      </button>
-      <button
-        style="padding: 10px; background: rgb(185, 183, 183)"
-        (click)="save()"
-      >
-        Save
-      </button>
-    </div>
-  </div>
-  <ckeditor
-    (change)="onChange($event)"
-    style="margin-top: 10px"
-    [data]="updateWikiData!.content!"
-    [editor]="Editor"
-  >
-  </ckeditor>
-</ng-container>
-<ng-template #createing>
-    <div
-    style="
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
+      margin-bottom: 10px
     "
   >
     <input type="text" name="title" id="title" [formControl]="title" placeholder="Title" />
@@ -58,7 +21,7 @@
       </button>
       <button
         style="padding: 10px; background: rgb(185, 183, 183)"
-        (click)="create()"
+        (click)="onFinish()"
       >
         Save
       </button>
@@ -66,9 +29,7 @@
   </div>
   <ckeditor
     (change)="onChange($event)"
-    style="margin-top: 10px"
-    [data]="createWikiData!.content!"
+    [data]="data.content"
     [editor]="Editor"
   >
   </ckeditor>
-</ng-template>

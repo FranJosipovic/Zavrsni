@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
+using MediatR;
 using Zavrsni.TeamOps.Common;
+using Zavrsni.TeamOps.EF.Enums;
 using Zavrsni.TeamOps.Entity.Models;
+using Zavrsni.TeamOps.Features.Iterrations.Commands;
 using Zavrsni.TeamOps.Features.Organizations.Repository;
 using Zavrsni.TeamOps.Features.Projects.Models;
 using Zavrsni.TeamOps.Features.Projects.Repository;
 using Zavrsni.TeamOps.Features.Users.Repository;
+using Zavrsni.TeamOps.Features.WorkItems.Models.DTOs;
+using Zavrsni.TeamOps.Features.WorkItems.Queries;
 
 namespace Zavrsni.TeamOps.Features.Projects.Services
 {
@@ -13,15 +18,17 @@ namespace Zavrsni.TeamOps.Features.Projects.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IOrganizationRepository _organizationRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ISender _sender;
 
         private readonly IMapper _mapper;
 
-        public ProjectService(IProjectRepository projectRepository, IOrganizationRepository organizationRepository, IMapper mapper, IUserRepository userRepository)
+        public ProjectService(IProjectRepository projectRepository, IOrganizationRepository organizationRepository, IMapper mapper, IUserRepository userRepository, ISender sender)
         {
             _projectRepository = projectRepository;
             _organizationRepository = organizationRepository;
             _mapper = mapper;
             _userRepository = userRepository;
+            _sender = sender;
         }
 
         public async Task<ServiceActionResult> GetProjectIdByName(string name, Guid organizationId)
@@ -74,6 +81,10 @@ namespace Zavrsni.TeamOps.Features.Projects.Services
 
             serviceActionResult.SetOk(newProject, "Project successfully created");
 
+            //create default iteration for project
+            var command = new CreateIterration.Command { ProjectId = addedProject.Id, StartsAt = DateTime.Now, EndsAt = DateTime.Now.AddDays(14) };
+            await _sender.Send(command);
+
             return serviceActionResult;
         }
 
@@ -107,8 +118,48 @@ namespace Zavrsni.TeamOps.Features.Projects.Services
             }
             //add to proj
             await _projectRepository.AddUserToProjectAsync(model.UserId, model.ProjectId);
-            //return some object instd of null
+            //return some object instead of null
             serviceActionResult.SetOk(null, "User successfully added");
+            return serviceActionResult;
+        }
+
+        public async Task<ServiceActionResult> GetProjectDetails(Guid projectId)
+        {
+            var serviceActionResult = new ServiceActionResult();
+
+            var project = await _projectRepository.GetAsync(projectId);
+            if (project == null)
+            {
+                serviceActionResult.SetBadRequest("Project does not exist");
+                return serviceActionResult;
+            }
+            var workItemsResponse = await _sender.Send(new GetWorkItemsByProject.Query { ProjectId = project.Id });
+            var workItems = (CollectionResponseData<WorkItemResponseItemDTO>)workItemsResponse.GetData()!;
+            List<WorkItemResponseItemDTO> userStories = new List<WorkItemResponseItemDTO>();
+            List<WorkItemResponseItemDTO> tasks_bugs = new List<WorkItemResponseItemDTO>();
+            foreach (var workItem in workItems.Items)
+            {
+                if (workItem.Type == WorkItemType.User_Story.ToString().Replace('_',' '))
+                {
+                    userStories.Add(workItem);
+                }
+                else
+                {
+                    tasks_bugs.Add(workItem);
+                }
+            }
+
+            var iterationsCount = await _projectRepository.GetIterationsCountByProjectAsync(project.Id);
+            var usersCount = await _projectRepository.GetUsersCountByProjectAsync(project.Id);
+
+            serviceActionResult.SetOk(new ProjectDetailsDTO
+            {
+                Title = project.Name,
+                UserStories = userStories.Count,
+                Task_bugs = tasks_bugs.Count,
+                Iterations = iterationsCount,
+                Users = usersCount
+            },"success");
             return serviceActionResult;
         }
     }

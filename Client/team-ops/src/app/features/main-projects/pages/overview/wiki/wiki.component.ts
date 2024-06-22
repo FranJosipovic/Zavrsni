@@ -4,19 +4,10 @@ import {
   ProjectWikiNode,
   WikiService,
 } from './services/wiki.service';
-import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-  MatTreeNestedDataSource,
-} from '@angular/material/tree';
-import { ContentObserver } from '@angular/cdk/observers';
-import { ToastrService } from 'ngx-toastr';
-import {
-  CreateWikiData,
-  UpdateWikiData,
-} from './create-update-wiki/create-update-wiki.component';
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { UserStore } from '../../../../../store/user.store';
+import { CreateOrUpdateWikiData } from './create-update-wiki/create-update-wiki.component';
 
 @Component({
   selector: 'app-wiki',
@@ -24,28 +15,32 @@ import { UserStore } from '../../../../../store/user.store';
   styleUrl: './wiki.component.scss',
 })
 export class WikiComponent implements OnInit {
+
   private projectId: string;
-  public updateWikiData: UpdateWikiData | null = null;
-  public createWikiData: CreateWikiData | null = null;
-
-  treeControl = new NestedTreeControl<ProjectWikiNode>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<ProjectWikiNode>();
-
-  constructor(
-    private wikiService: WikiService,
-    private toastr: ToastrService,
-    private userStore: UserStore
-  ) {
+  constructor(private wikiService: WikiService, private userStore: UserStore) {
     this.projectId = localStorage.getItem('projectId')!;
   }
 
-  public selectedNodeId: string | undefined = '';
-
   ngOnInit(): void {
-    this.loadWikis()
+    this.loadWikis();
+  }
+  //tree wikis data
+  treeControl = new NestedTreeControl<ProjectWikiNode>((node) => node.children);
+  dataSource = new MatTreeNestedDataSource<ProjectWikiNode>();
+
+  hasChild = (_: number, node: ProjectWikiNode) =>
+    !!node.children && node.children.length > 0;
+
+  onNodeItemClick(id: string) {
+    this.selectedNodeId = id;
+    this.isEditingOrCreating = false;
+    this.loadWikiData(id);
   }
 
-  loadWikis(){
+  loadWikis() {
+    this.dataSource.data = []
+    this.selectedProjectWiki = null
+    this.selectedNodeId = undefined
     this.wikiService.getWikis(this.projectId).subscribe((data) => {
       console.log(data);
       if (data.isSuccess) {
@@ -53,58 +48,92 @@ export class WikiComponent implements OnInit {
           this.selectedNodeId = data.data?.items[0]?.id;
           this.dataSource.data = data.data?.items!;
           if (this.selectedNodeId && this.selectedNodeId.length > 0) {
-            this.loadItemData(this.selectedNodeId);
+            this.loadWikiData(this.selectedNodeId);
           }
         }
       }
     });
   }
 
-  hasChild = (_: number, node: ProjectWikiNode) => !!node.children && node.children.length > 0;
-
-  onNodeItemClick(id: string) {
-    this.selectedNodeId = id;
-    this.isEditingOrCreating = false;
-    this.loadItemData(id);
-  }
-
-  loadItemData(id: string) {
+  loadWikiData(id: string) {
     this.wikiService.getWikiData(id).subscribe((data) => {
       console.log(data);
       this.selectedProjectWiki = data.data;
     });
   }
 
+  //create or update wiki
+  public createOrUpdateWikiData: CreateOrUpdateWikiData | null = null;
+  public selectedNodeId: string | undefined = '';
   public selectedProjectWiki: ProjectWikiData | null | undefined;
-
   public isEditingOrCreating: boolean = false;
+  public shouldCreate!: boolean;
+  
+  editOrCreate(shouldCreate: boolean) {
+    this.createOrUpdateWikiData = {
+      wikiId: this.selectedProjectWiki?.id ?? null,
+      title: this.selectedProjectWiki?.title ?? '',
+      content: this.selectedProjectWiki?.content ?? '',
+      parentId: this.selectedProjectWiki?.parentId ?? null,
+      createdById: this.userStore.getState().user?.id!,
+      projectId: this.projectId,
+    };
+    this.shouldCreate = shouldCreate
+    this.isEditingOrCreating = true;
+  }
 
-  edit() {
-    this.updateWikiData = this.selectedProjectWiki
-      ? {
-          wikiId: this.selectedProjectWiki.id,
-          title: this.selectedProjectWiki.title,
-          content: this.selectedProjectWiki.content,
-        }
-      : null;
+  createNewWiki(){
+    this.createOrUpdateWikiData = {
+      wikiId: null,
+      title: '',
+      content: '',
+      parentId: null,
+      createdById: this.userStore.getState().user?.id!,
+      projectId: this.projectId,
+    };
+    this.shouldCreate = true
+    this.isEditingOrCreating = true;
+  }
 
-    this.createWikiData = this.selectedProjectWiki
-      ? null
-      : {
-          projectId: this.projectId,
-          parentId: null,
-          content: '',
-          createdById: this.userStore.getState().user?.id!,
-        };
+  createNewWikiChild(parentId:string){
+    this.createOrUpdateWikiData = {
+      wikiId: null,
+      title: '',
+      content: '',
+      parentId: parentId,
+      createdById: this.userStore.getState().user?.id!,
+      projectId: this.projectId,
+    };
+    this.shouldCreate = true
+    this.isEditingOrCreating = true;
+  }
 
-    console.log(this.updateWikiData);
+  editWiki(){
+    this.createOrUpdateWikiData = {
+      wikiId: this.selectedProjectWiki?.id ?? null,
+      title: this.selectedProjectWiki?.title ?? '',
+      content: this.selectedProjectWiki?.content ?? '',
+      parentId: this.selectedProjectWiki?.parentId ?? null,
+      createdById: this.userStore.getState().user?.id!,
+      projectId: this.projectId,
+    };
+    this.shouldCreate = false
     this.isEditingOrCreating = true;
   }
 
   finishCreateOrEdit() {
-    this.updateWikiData = null;
-    this.createWikiData = null;
+    this.createOrUpdateWikiData = null;
     this.isEditingOrCreating = false;
-    this.loadWikis()
+    this.loadWikis();
+  }
+
+  deleteWiki(){
+    this.selectedProjectWiki?.id && 
+    this.wikiService.deleteWiki(this.selectedProjectWiki?.id).subscribe((res)=>{
+      console.log(res)
+      if(res.isSuccess){
+        this.loadWikis()
+      }
+    })
   }
 }

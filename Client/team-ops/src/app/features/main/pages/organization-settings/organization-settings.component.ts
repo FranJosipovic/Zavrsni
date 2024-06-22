@@ -16,23 +16,24 @@ import { UserStore } from '../../../../store/user.store';
 })
 export class OrganizationSettingsComponent implements OnInit {
   public userState: User;
-  public isReadOnly = true
+  public isReadOnly = true;
 
-  public overviewSection = 'overview'
-  public projectsSection = 'projects'
+  public overviewSection = 'overview';
+  public projectsSection = 'projects';
 
-  public settingsSections = [this.overviewSection,this.projectsSection]
+  public settingsSections = [this.overviewSection, this.projectsSection];
 
-  public selectedSection = this.settingsSections[0]
+  public selectedSection = this.settingsSections[0];
 
-  onSectionSelect(settingsSection:string){
-    this.selectedSection = settingsSection
+  onSectionSelect(settingsSection: string) {
+    this.selectedSection = settingsSection;
   }
 
   public organizationId: string;
   public organizationDetails: OrganizationDetails | null = null;
 
-  constructor(private userStore: UserStore,
+  constructor(
+    private userStore: UserStore,
     private route: ActivatedRoute,
     private organizationService: OrganizationService,
     private toastr: ToastrService
@@ -88,30 +89,36 @@ export class OrganizationSettingsComponent implements OnInit {
   //============Overview section logic============
 
   //============Projects section logic============
-  displayedColumns:string[] = ['Name','Description','Last Updated', 'Participants']
+  displayedColumns: string[] = [
+    'Name',
+    'Description',
+    'Last Updated',
+    'Participants',
+  ];
   //============Projects section logic============
 
   ngOnInit(): void {
-    this.route.data.subscribe(data => {
+    this.route.data.subscribe((data) => {
       this.organizationId = data['ids'].id;
-      if(this.organizationId){
-        this.loadOrganzationDetails()
+      if (this.organizationId) {
+        this.loadOrganzationDetails();
       }
     });
   }
 
-  loadOrganzationDetails(){
+  loadOrganzationDetails() {
     this.organizationService
       .getOrganizationDetails(this.organizationId)
       .subscribe((data) => {
         if (data.isSuccess) {
-          console.log(data)
+          console.log(data);
           this.organizationDetails = data.data;
           this.overviewForm.patchValue({
             name: data.data?.name,
             description: data.data?.description,
           });
-          this.isReadOnly = this.organizationDetails?.ownerId !== this.userState.id 
+          this.isReadOnly =
+            this.organizationDetails?.ownerId !== this.userState.id;
         } else {
           this.toastr.show(
             data.message,
@@ -126,4 +133,3 @@ export class OrganizationSettingsComponent implements OnInit {
       });
   }
 }
-
